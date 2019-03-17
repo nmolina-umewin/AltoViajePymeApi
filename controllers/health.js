@@ -5,20 +5,20 @@ const Utilities = require('../utilities');
 
 function handle(req, res, next) 
 {
-    Utilities.Database.query('SHOW TABLES', function (error, results, fields) {
-        var data = [];
+    Utilities.Database.isAlive().then(alive => response(null, alive)).catch(response);
 
-        results.forEach(function(element) {
-            data.push(element.Tables_in_av_pyme);
-        });
-
+    function response(error, alive)
+    {
         res.send({
             description: pkg.description,
             environment: process.env.NODE_ENV || 'production',
             version: pkg.version,
-            tables: data
+            database: {
+                alive
+            }
         });
-    });
+    }
 }
+
 
 module.exports = handle;
