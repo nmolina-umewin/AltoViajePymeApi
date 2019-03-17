@@ -23,8 +23,8 @@ function handle(req, res)
             .then(() => {
                 return login(context);
             })
-            .then(user => {
-                res.send(user);
+            .then(model => {
+                res.send(model);
             })
     );
 }
@@ -34,11 +34,11 @@ function validate(context)
     return new P((resolve, reject) => {
         if (_.isEmpty(context.email) || !validator.isEmail(context.email)) {
             Log.Error('Bad request email not found.');
-            return reject(new Utilities.Errors.CustomError('Bad request email not found.', {code: 400}));
+            return reject(new Utilities.Errors.BadRequest('Bad request email not found.'));
         }
         else if (_.isEmpty(context.password)) {
             Log.Error('Bad request password not found.');
-            return reject(new Utilities.Errors.CustomError('Bad request password not found.', {code: 400}));
+            return reject(new Utilities.Errors.BadRequest('Bad request password not found.'));
         }
         return resolve(context);
     });
@@ -49,7 +49,11 @@ function login(context)
     return Models.Users.login(context.email, context.password).then(user => {
         if (!user) {
             Log.Error('User not found.');
-            return reject(Utilities.Errors.NotExists.User);
+            return P.reject(Utilities.Errors.NotExists.User);
+        }
+        if (user.status.id !== Models.UserStatuses.VERIFIED) {
+            Log.Error('User unauthorized.');
+            return P.reject(new Utilities.Errors.Unauthorized('User unauthorized'));
         }
         return user;
     });

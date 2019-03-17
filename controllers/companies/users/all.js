@@ -34,8 +34,8 @@ function validate(context)
 {
     return new P((resolve, reject) => {
         if (_.isEmpty(context.idCompany) || !validator.isInt(context.idCompany)) {
-            Log.Error('Bad request id company not found.');
-            return reject(new Utilities.Errors.CustomError('Bad request id company not found.', {code: 400}));
+            Log.Error('Bad request invalid id company.');
+            return reject(new Utilities.Errors.BadRequest('Bad request invalid id company.'));
         }
         return resolve(context);
     });
@@ -46,7 +46,7 @@ function getCompany(context)
     return Models.Companies.getById(context.idCompany).then(company => {
         if (!company) {
             Log.Error(`Company ${context.idCompany} not found.`);
-            return reject(Utilities.Errors.NotExists.Company);
+            return P.reject(Utilities.Errors.NotExists.Company);
         }
         context.company = company;
         return context;
@@ -59,8 +59,8 @@ function getUsers(context)
         withoutCompany: true
     };
 
-    return Models.Users.getByCompany(context.idCompany, options).then(users => {
-        return users || [];
+    return Models.Users.getByCompany(context.idCompany, options).then(models => {
+        return models || [];
     });
 }
 

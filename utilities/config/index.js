@@ -3,8 +3,10 @@
 const _ = require('lodash');
 
 const CONFIG = {
-    Server : require('./server'),
-    Database : require('./database')
+    Cache    : require('./cache'),
+    Server   : require('./server'),
+    Database : require('./database'),
+    Service  : require('./service')
 };
 
 function Config(key, defaultValue)

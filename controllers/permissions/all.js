@@ -7,7 +7,6 @@ const Log       = Utilities.Log;
 
 function handle(req, res) 
 {
-    
     return Utilities.Functions.CatchError(res,
         P.bind(this)
             .then(() => {
@@ -24,7 +23,7 @@ function getPermissions()
     return Models.Permissions.getAll().then(permissions => {
         if (!permissions) {
             Log.Error('Permissions not found.');
-            return reject(Utilities.Errors.NotExists.Permissions);
+            return P.reject(Utilities.Errors.NotExists.Permissions);
         }
         return permissions;
     });

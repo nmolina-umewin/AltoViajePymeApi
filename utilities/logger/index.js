@@ -25,7 +25,7 @@ function Debug(msg)
 
 function Title(msg)
 {
-    console.log('\n', msg.yellow);
+    console.log('\n', `${msg}`.yellow);
 }
 
 function Step(msg)
@@ -44,7 +44,7 @@ function Arrow(msg)
 }
 
 module.exports = {
-    Error  : logError,
+    Error : logError,
     Success,
     Warning,
     Debug,

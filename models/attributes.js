@@ -1,23 +1,21 @@
 "use strict";
 
-const P = require('bluebird');
-const Base = require('./parents/model');
+const P     = require('bluebird');
+const Base  = require('./parents/model');
 const async = require('async');
-const Utilities = require('../utilities');
-const Database  = Utilities.Database;
-
-const Queries = Database.Queries.Attributes;
 
 const MODEL_NAME = 'attribute';
 
 class Model extends Base
 {
-    constructor() {
+    constructor()
+    {
         super(MODEL_NAME);
     }
 
-    getByEntity(entity, id) {
-        return this.query(Queries.byEntity(entity, id)).then(models => {
+    getAllRaw()
+    {
+        return this.query(this.queries.Attributes.byEntity(entity, id)).then(models => {
             return new P((resolve, reject) => {
                 async.map(models, (model, next) => {
                     return P.bind(this)
@@ -32,36 +30,42 @@ class Model extends Base
                         .catch(next);
                 }, (error, models) => {
                     if (error) return reject(error);
-                    resolve(models);
+                    return resolve(models);
                 });
             });
         });
     }
 
-    populate(model, options) {
-        options = options || {};
+    getByEntity(entity, id)
+    {
+        return this.query(this.queries.Attributes.byEntity(entity, id)).then(models => {
+            return new P((resolve, reject) => {
+                async.map(models, (model, next) => {
+                    return P.bind(this)
+                        .then(() => {
+                            model.value = model.description;
+                            model.field = {
+                                name: model.name,
+                                type: model.type
+                            };
 
-        return P.bind(this)
-            .then(() => {
-                model.value = model.description;
-                model.field = {
-                    name: model.name,
-                    type: model.type
-                };
+                            delete model[`id_${entity}`];
+                            delete model.id_attribute;
+                            delete model.description;
+                            delete model.created_at;
+                            delete model.updated_at;
+                            delete model.name;
+                            delete model.type;
 
-                if (options.entity) {
-                    delete model[`id_${options.entity}`];
-                    
-                }
-                delete model.id_attribute;
-                delete model.description;
-                delete model.created_at;
-                delete model.updated_at;
-                delete model.name;
-                delete model.type;
-
-                return model;
+                            next(null, model);
+                        })
+                        .catch(next);
+                }, (error, models) => {
+                    if (error) return reject(error);
+                    return resolve(models);
+                });
             });
+        });
     }
 }
 

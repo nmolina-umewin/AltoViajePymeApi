@@ -2,11 +2,12 @@
 
 const Base = require('./parents/model');
 
-const MODEL_NAME = 'attribute_type';
+const MODEL_NAME = 'attributeType';
 
 class Model extends Base
 {
-    constructor() {
+    constructor()
+    {
         super(MODEL_NAME);
     }
 }

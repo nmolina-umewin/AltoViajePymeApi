@@ -1,61 +1,215 @@
 "use strict";
 
-const _ = require('lodash');
-const P = require('bluebird');
-const Base = require('./parents/attributable');
-const Utilities = require('../utilities');
-const Database  = Utilities.Database;
+const _      = require('lodash');
+const P      = require('bluebird');
+const sha256 = require('sha256');
+const Config = require('../utilities/config');
+const Base   = require('./parents/attributable');
 
-const Queries = Database.Queries.Users;
-
-const MODEL_NAME = 'user';
+const OMIT_OPTIONS     = Config('Database.Options.OmitOptions', ['attributes', 'where', 'order', 'group', 'limit', 'offset']);
+const DEFAULT_FIELD_ID = Config('Database.Options.DefaultFieldId', 'id');
+const MODEL_NAME       = 'user';
 
 class Model extends Base
 {
-    constructor() {
+    constructor()
+    {
         super(MODEL_NAME);
     }
 
-    getByCompany(idCompany, options) {
-        return this.query(Queries.byCompany(idCompany), options).then(models => {
-            return this.mapping(models, options);
+    getAll(options)
+    {
+        return this.query(this.queries.Users.all(), options).then(models => {
+            return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));
         });
     }
 
-    getByEmail(email, options) {
-        return this.queryOne(Queries.byEmail(email), options).then(model => {
-            return P.resolve(this.populate(model, options));
+    getByCompany(idCompany, options)
+    {
+        return this.query(this.queries.Users.byCompany(idCompany), options).then(models => {
+            return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));
         });
     }
 
-    login(email, password, options) {
+    getByEmail(email, options)
+    {
+        return this.queryOne(this.queries.Users.byEmail(email), options).then(model => {
+            return this.populate(model, options);
+        });
+    }
+
+    getByIds(ids, options)
+    {
+        return this.query(this.queries.Users.byIds(ids), options).then(models => {
+            return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));
+        });
+    }
+
+    login(email, password, options)
+    {
         return P.bind(this)
             .then(() => {
                 return this.getByEmail(email);
             })
             .then(model => {
-                return this.queryOne(Queries.byIdAndPassword(model.id, password));
+                if (!model) {
+                    return P.resolve();
+                }
+                return this.queryOne(this.queries.Users.byIdAndPassword(model.id, password));
             })
             .then(model => {
+                if (!model) {
+                    return P.resolve();
+                }
                 return this.getById(model.id, options);
             });
     }
 
-    create(data, options) {
+    forgotPassword(email, options)
+    {
+        let context = {};
+        let token;
+
         return P.bind(this)
             .then(() => {
-                return this.create({
-                    id: null,
-                    id_user_status: 1
+                return this.getByEmail(email).then(model => {
+                    context.user = model;
+                    return context;
+                });
+            })
+            .then(() => {
+                return this.models.UserTokens.getById(context.user.id, 'id_user').then(token => {
+                    if (!token) {
+                        return this.createUserToken(context.user).then(token => {
+                            context.token = token;
+                            return context;
+                        });
+                    }
+                    context.token = token;
+                    return context;
+                });
+            })
+            .then(() => {
+                return this.transaction(transaction => {
+                    let optionsPrepared = this.prepareWriteOptions(options);
+                    
+                    token = sha256(`user.id.${context.user.id}.created_at.${new Date()}`);
+                    optionsPrepared.transaction = transaction;
+
+                    return P.bind(this)
+                        .then(() => {
+                            let data = {
+                                token
+                            };
+
+                            return this.models.UserTokens.update(data, context.token.id, optionsPrepared);
+                        })
+                        .then(() => {
+                            let data = {
+                                id_user_status : this.models.UserStatuses.NEED_PASSWORD
+                            };
+
+                            return this.models.Users.update(data, context.user.id, optionsPrepared);
+                        });
+                });
+            })
+            .then(() => {
+                return this.getById(context.user.id, options).then(model => {
+                    model.token = token;
+                    return model;
                 });
             });
-
-            // Create user attributes
-            // Create user permission relationship
-            // Create user company relationship
     }
 
-    populate(model, options) {
+    createWithAttributesWithoutTransaction(data, attributes, options)
+    {
+        options = options || {};
+
+        return P.bind(this)
+            .then(() => {
+                return super.createWithAttributesWithoutTransaction(data, attributes, options);
+            })
+            .then(model => {
+                if (!options.idCompany) {
+                    return model;
+                }
+
+                let data = {
+                    id_user    : model.id,
+                    id_company : options.idCompany
+                };
+
+                return this.models.UserCompanies.create(data).then(() => {
+                    return model;
+                });
+            })
+            .then(model => {
+                if (!options.idPermission) {
+                    return model;
+                }
+
+                let data = {
+                    id_user       : model.id,
+                    id_permission : options.idPermission
+                };
+
+                return this.models.UserPermissions.create(data).then(() => {
+                    return model;
+                });
+            })
+            .then(model => {
+                return this.createUserToken(model).then(token => {
+                    model.token = token.token;
+                    return model;
+                });
+            });
+    }
+
+    updateWithAttributesWithoutTransaction(data, id, attributes, options)
+    {
+        options = options || {};
+
+        return P.bind(this)
+            .then(() => {
+                return super.updateWithAttributesWithoutTransaction(data, id, attributes, options);
+            })
+            .then(model => {
+                if (!options.idPermission) {
+                    return model;
+                }
+
+                return this.models.UserPermissions.getByUser(model.id).then(userPermission => {
+                    if (userPermission.id_permission === options.idPermission) {
+                        return model;
+                    }
+
+                    let data = {
+                        id_permission: options.idPermission
+                    };
+
+                    return this.models.UserPermissions.update(data, userPermission.id).then(userPermission => {
+                        return model;
+                    });
+                });
+            });
+    }
+
+    createUserToken(user)
+    {
+        return P.bind(this)
+            .then(() => {
+                let token = sha256(`user.id.${user.id}.created_at.${new Date()}`);
+                let data = {
+                    id_user : user.id,
+                    token
+                };
+
+                return this.models.UserTokens.create(data);
+            });
+    }
+
+    populate(model, options)
+    {
         options = options || {};
 
         return P.bind(this)
@@ -84,6 +238,15 @@ class Model extends Base
                     return model;
                 });
             });
+    }
+
+    cacheKey(key, options) {
+        let cacheKey = super.cacheKey(key, options);
+
+        if (options.withoutCompany) {
+            cacheKey = `${cacheKey}.without_company`;
+        }
+        return cacheKey;
     }
 }
 

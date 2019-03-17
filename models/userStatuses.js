@@ -1,15 +1,31 @@
 "use strict";
 
+const _ = require('lodash');
 const Base = require('./parents/model');
 
-const MODEL_NAME = 'user_status';
-const MODEL_TABLE = 'user_statuses';
+const MODEL_NAME = 'userStatus';
+
+const STATUSES = {
+    PENDING       : 1,
+    NEED_PASSWORD : 2,
+    VERIFIED      : 3,
+    BLOCKED       : 4
+};
 
 class Model extends Base
 {
-    constructor() {
-        super(MODEL_NAME, MODEL_TABLE);
+    constructor()
+    {
+        super(MODEL_NAME);
     }
 }
+
+_.each(STATUSES, (status, key) => {
+    Object.defineProperty(Model.prototype, key, {
+        get: () => status,
+        enumerable: true,
+        configurable: false
+    });
+});
 
 module.exports = new Model;

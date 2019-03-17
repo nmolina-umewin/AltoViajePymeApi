@@ -22,15 +22,10 @@ function handle(req, res)
                 return getUser(context);
             })
             .then(() => {
-                return getCompany(context);
-            })
-            /*
-            .then(() => {
                 return update(context);
             })
-            */
             .then(model => {
-                res.send(context.user);
+                res.send(model);
             })
     );
 }
@@ -39,28 +34,20 @@ function validate(context)
 {
     return new P((resolve, reject) => {
         if (_.isEmpty(context)) {
-            Log.Error('Bad request user information not found.');
-            return reject(new Utilities.Errors.CustomError('Bad request user information not found.', {code: 400}));
+            Log.Error('Bad request invalid user information.');
+            return reject(new Utilities.Errors.BadRequest('Bad request invalid user information.'));
         }
         else if (_.isEmpty(context.idUser) || !validator.isInt(context.idUser)) {
-            Log.Error('Bad request id user not found.');
-            return reject(new Utilities.Errors.CustomError('Bad request id user not found.', {code: 400}));
+            Log.Error('Bad request invalid id user.');
+            return reject(new Utilities.Errors.BadRequest('Bad request invalid id user.'));
         }
-        else if (!context.idCompany) {
-            Log.Error('Bad request id company not found.');
-            return reject(new Utilities.Errors.CustomError('Bad request id company not found.', {code: 400}));
+        else if (!_.isEmpty(context.email) && !validator.isEmail(context.email)) {
+            Log.Error('Bad request invalid email.');
+            return reject(new Utilities.Errors.BadRequest('Bad request invalid email.'));
         }
-        else if (_.isEmpty(context.name)) {
-            Log.Error('Bad request name not found.');
-            return reject(new Utilities.Errors.CustomError('Bad request name not found.', {code: 400}));
-        }
-        else if (_.isEmpty(context.email) || !validator.isEmail(context.email)) {
-            Log.Error('Bad request email not found.');
-            return reject(new Utilities.Errors.CustomError('Bad request email not found.', {code: 400}));
-        }
-        else if (_.isEmpty(context.rol) || !validator.isInt(context.rol)) {
-            Log.Error('Bad request rol not found.');
-            return reject(new Utilities.Errors.CustomError('Bad request rol not found.', {code: 400}));
+        else if (!_.isEmpty(context.rol) && !validator.isInt(context.rol)) {
+            Log.Error('Bad request invalid rol.');
+            return reject(new Utilities.Errors.BadRequest('Bad request invalid rol.'));
         }
         return resolve(context);
     });
@@ -78,27 +65,66 @@ function getUser(context)
     });
 }
 
-function getCompany(context) 
-{
-    return Models.Companies.getById(context.idCompany).then(company => {
-        if (!company) {
-            Log.Error(`Company ${context.idCompany} not found.`);
-            return reject(Utilities.Errors.NotExists.Company);
-        }
-        context.company = company;
-        return context;
-    });
-}
-
 function update(context) 
 {
-    return Models.Users.update(context).then(user => {
-        if (!user) {
-            Log.Error('User can not updated.');
-            return reject(new Utilities.Errors.CustomError('User can not updated.', {code: 500}));
-        }
-        return user;
-    });
+    return P.resolve()
+        .then(() => {
+            return prepare(context);
+        })
+        .then(() => {
+            return save(context);
+        })
+        .then(() => {
+            return Models.Users.getById(context.user.id, {
+                useMaster: true,
+                force: true
+            });
+        });
+}
+
+function prepare(context) 
+{
+    return P.resolve()
+        .then(() => {
+            context.attributes = [];
+
+            if (context.name) {
+                context.attributes.push({
+                    name  : 'name',
+                    value : context.name
+                });
+            }
+            if (context.email) {
+                context.attributes.push({
+                    name  : 'email',
+                    value : context.email
+                });
+            }
+            return context;
+        });
+}
+
+function save(context) 
+{
+    return P.resolve()
+        .then(() => {
+            let data = {
+                active: !_.isNil(context.active) ? context.active : context.user.active
+            };
+            let options = {};
+
+            if (context.rol) {
+                options.idPermission = Number(context.rol);
+            }
+
+            return Models.Users.updateWithAttributes(data, context.user.id, context.attributes, options);
+        })
+        .then(model => {
+            Models.Companies.cacheClean(context.idCompany);
+            Models.Users.cacheClean(context.user.id);
+            context.user = model;
+            return model;
+        });
 }
 
 module.exports = handle;
