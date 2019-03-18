@@ -41,13 +41,11 @@ function validate(context)
 function getRecharges(context) 
 {
     let options = {
-        withoutCompany: true,
-        where: {
-            id_company: context.idCompany
-        }
+        withoutDetails: true,
+        withoutCompany: true
     };
 
-    return Models.RechargeTransactions.getAll(options).then(transactions => {
+    return Models.RechargeTransactions.getByCompany(Number(context.idCompany), options).then(transactions => {
         if (!transactions) {
             Log.Error(`Recharge Transactions for company ${context.idCompany} not found.`);
             return P.reject(Utilities.Errors.NotExists.RechargeTransactions);

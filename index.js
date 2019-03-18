@@ -31,7 +31,8 @@ app.put(    '/persons/:id',                           Controllers.Persons.Update
 app.get(    '/persons/:id',                           Controllers.Persons.ById);
 app.delete( '/persons/:id',                           Controllers.Persons.Delete);
 app.post(   '/persons/delete/batch',                  Controllers.Persons.DeleteBatch);
-app.post(   '/recharge',                              Controllers.Recharges.Recharge);
+app.post(   '/recharges',                             Controllers.Recharges.Recharge);
+app.post(   '/recharges/:id/repeat',                  Controllers.Recharges.RechargeRepeat);
 app.get(    '/companies/:id',                         Controllers.Companies.ById);
 app.get(    '/companies/:id/users',                   Controllers.Companies.Users.All);
 app.get(    '/companies/:id/groups',                  Controllers.Companies.Groups.All);

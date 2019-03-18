@@ -17,7 +17,7 @@ class Model extends Base
         super(MODEL_NAME);
     }
 
-    getAll(idBenefit, options)
+    getAll(options)
     {
         return this.query(this.queries.Groups.all(), options).then(models => {
             return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));

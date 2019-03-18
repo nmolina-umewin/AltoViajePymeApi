@@ -217,6 +217,9 @@ class Model extends Base
                 return super.populate(model);
             })
             .then(() => {
+                if (options.small) {
+                    return model;
+                }
                 return this.models.Permissions.getByUser(model.id).then(permissions => {
                     model.roles = _.map(permissions, 'description');
                     return model;
@@ -230,7 +233,7 @@ class Model extends Base
                 });
             })
             .then(() => {
-                if (options.withoutCompany) {
+                if (options.small || options.withoutCompany) {
                     return model;
                 }
                 return this.models.Companies.getByUser(model.id).then(company => {
@@ -243,6 +246,9 @@ class Model extends Base
     cacheKey(key, options) {
         let cacheKey = super.cacheKey(key, options);
 
+        if (options.small) {
+            cacheKey = `${cacheKey}.small`;
+        }
         if (options.withoutCompany) {
             cacheKey = `${cacheKey}.without_company`;
         }

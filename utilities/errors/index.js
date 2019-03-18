@@ -54,6 +54,7 @@ module.exports = {
         Permissions          : new NotFound('The given permissions doesn\'t exist.'),
         Company              : new NotFound('The given company doesn\'t exist.'),
         Companies            : new NotFound('The given companies doesn\'t exist.'),
+        RechargeTransaction  : new NotFound('The given recharge transaction doesn\'t exist.'),
         RechargeTransactions : new NotFound('The given recharge transactions doesn\'t exist.')
     },
     Format     : {

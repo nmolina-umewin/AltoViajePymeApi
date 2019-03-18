@@ -29,16 +29,19 @@ class Service extends Base
 
         return new P(resolve => {
             async.eachSeries(records, (record, next) => {
+                let result = {
+                    request: record
+                };
+
+                results.push(result);
+
                 this.recharge(record).then(transaction => {
-                    results.push({
-                        transaction
-                    });
+                    result.transaction = transaction;
                     next();
                 })
                 .catch(error => {
-                    results.push({
-                        error
-                    });
+                    result.error = error;
+                    next();
                 });
             }, error => {
                 let response = {

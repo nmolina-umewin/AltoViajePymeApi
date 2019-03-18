@@ -17,11 +17,24 @@ class Model extends Base
         super(MODEL_NAME);
     }
 
-    getAll(idBenefit, options)
+    getAll(options)
     {
         return this.query(this.queries.Persons.all(), options).then(models => {
             return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));
         });
+    }
+
+    getById(idPerson, options)
+    {
+        let optionsPrepared = this.prepareOptions(options);
+
+        // Prepare where condition
+        optionsPrepared.where = optionsPrepared.where || {};
+        optionsPrepared.where.deleted_at = {
+            $is: null
+        };
+
+        return super.getById(idPerson, optionsPrepared);
     }
 
     getByCompany(idCompany, options)
@@ -215,7 +228,7 @@ class Model extends Base
                 });
             })
             .then(() => {
-                if (options.withoutCompany) {
+                if (options.small || options.withoutCompany) {
                     return model;
                 }
                 return this.models.Companies.getById(model.id_company).then(company => {
@@ -229,6 +242,9 @@ class Model extends Base
     cacheKey(key, options) {
         let cacheKey = super.cacheKey(key, options);
 
+        if (options.small) {
+            cacheKey = `${cacheKey}.small`;
+        }
         if (options.withoutCompany) {
             cacheKey = `${cacheKey}.without_company`;
         }

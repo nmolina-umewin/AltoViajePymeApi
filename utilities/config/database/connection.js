@@ -19,6 +19,9 @@ module.exports = {
             password : '05D06455cbfcf7eec1a6d03a18a1ffbe!'
         }
     },
+    dialectOptions: {
+        decimalNumbers: true
+    },
     operatorsAliases: {
         $eq: Op.eq,
         $ne: Op.ne,
