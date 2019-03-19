@@ -5,6 +5,7 @@ const P         = require('bluebird');
 const Models    = require('../../models');
 const Utilities = require('../../utilities');
 const validator = require('validator');
+const uuidv4    = require('uuid/v4');
 const Log       = Utilities.Log;
 
 function handle(req, res) 
@@ -78,6 +79,7 @@ function create(context)
         })
         .then(() => {
             return Models.Users.getById(context.user.id, {
+                withCode: true,
                 useMaster: true,
                 force: true
             })
@@ -112,6 +114,7 @@ function save(context)
         .then(() => {
             let data = {
                 id_user_status : Models.UserStatuses.PENDING,
+                code           : uuidv4(),
                 active         : 0
             };
 

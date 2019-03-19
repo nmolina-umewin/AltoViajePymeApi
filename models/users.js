@@ -217,6 +217,12 @@ class Model extends Base
                 return super.populate(model);
             })
             .then(() => {
+                if (!options.withCode) {
+                    delete model.code;
+                }
+                return model;
+            })
+            .then(() => {
                 if (options.small) {
                     return model;
                 }
@@ -251,6 +257,9 @@ class Model extends Base
         }
         if (options.withoutCompany) {
             cacheKey = `${cacheKey}.without_company`;
+        }
+        if (options.withCode) {
+            cacheKey = `${cacheKey}.with_code`;
         }
         return cacheKey;
     }
