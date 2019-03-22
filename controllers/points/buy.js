@@ -23,6 +23,7 @@ function handle(req, res)
                 return buy(context);
             })
             .then(model => {
+                console.log(model);
                 res.send(model);
             })
     );
@@ -35,8 +36,8 @@ function buy(context)
             return save(context);
         })
         .then(() => {
-            return Models.OperationTransactions.getById(context.operation.id, {
-                withoutDetails: false,
+            return Models.OperationTransactions.getById(context.transaction.id, {
+                withoutDetails: true,
                 withoutCompany: true,
                 useMaster: true,
                 force: true
@@ -49,15 +50,12 @@ function save(context)
     return P.resolve()
         .then(() => {
             return context.processor(context).then(transaction => {
+                Models.Companies.cacheClean(context.idCompany);
+                Models.OperationTransactions.cacheClean();
+
                 context.transaction = transaction;
                 return context;
             });
-        })
-        .then(model => {
-            Models.Companies.cacheClean(context.idCompany);
-            Models.OperationTransactions.cacheClean();
-            context.operation = model;
-            return model;
         });
 }
 
