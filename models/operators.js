@@ -3,11 +3,12 @@
 const _ = require('lodash');
 const Base = require('./parents/model');
 
-const MODEL_NAME = 'companyStatus';
+const MODEL_NAME = 'operator';
 
-const STATUSES = {
-    PENDING  : 1,
-    VERIFIED : 2
+const OPERATORS = {
+    RAPIPAGO      : 1,
+    WIRE_TRANSFER : 2,
+    BITEX         : 3
 };
 
 class Model extends Base
@@ -18,9 +19,9 @@ class Model extends Base
     }
 }
 
-_.each(STATUSES, (status, key) => {
+_.each(OPERATORS, (operator, key) => {
     Object.defineProperty(Model.prototype, key, {
-        get: () => status,
+        get: () => operator,
         enumerable: true,
         configurable: false
     });

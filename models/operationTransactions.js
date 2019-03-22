@@ -2,13 +2,12 @@
 
 const _      = require('lodash');
 const P      = require('bluebird');
-const async  = require('async');
 const Config = require('../utilities/config');
 const Base   = require('./parents/model');
 
 const OMIT_OPTIONS     = Config('Database.Options.OmitOptions', ['attributes', 'where', 'order', 'group', 'limit', 'offset']);
 const DEFAULT_FIELD_ID = Config('Database.Options.DefaultFieldId', 'id');
-const MODEL_NAME       = 'rechargeTransaction';
+const MODEL_NAME = 'operationTransaction';
 
 class Model extends Base
 {
@@ -21,12 +20,12 @@ class Model extends Base
     {
         options = options || {};
 
-        return this.query(this.queries.RechargeTransactions.byCompany(idCompany, options.limit || 0), options).then(models => {
+        return this.query(this.queries.OperationTransactions.byCompany(idCompany, options.limit || 0), options).then(models => {
             return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));
         });
     }
 
-    create(data, options, repeat = 0)
+    update(data, id, options, repeat = 0)
     {
         return this.transaction(transaction => {
             let optionsPrepared = _.extend({}, options || {}, {
@@ -35,17 +34,27 @@ class Model extends Base
 
             return P.bind(this)
                 .then(() => {
-                    return super.create(data, optionsPrepared);
+                    return super.update(data, optionsPrepared);
+                })
+                .then(() => {
+                    return super.getById(id, _.extend({}, optionsPrepared || {}, {
+                        useMaster: true,
+                        force: true
+                    }));
                 })
                 .then(model => {
+                    if (optionsPrepared.status !== this.models.OperationTransactionStatuses.APPROVED || !optionsPrepared.id_company) {
+                        return model;
+                    }
+
                     let optionsGet = _.defaults({
                         useMaster: true,
                         force: true
                     }, optionsPrepared);
 
-                    return this.models.CompanyWallets.getById(data.id_company, 'id_company', optionsGet).then(wallet => {
+                    return this.models.CompanyWallets.getById(optionsPrepared.id_company, 'id_company', optionsGet).then(wallet => {
                         let values = {
-                            points: wallet.points - data.points
+                            points: wallet.points + model.amount
                         };
 
                         return this.models.CompanyWallets.update(values, wallet.id, optionsPrepared);
@@ -57,7 +66,7 @@ class Model extends Base
         })
         .catch(error => {
             if (repeat < 5) {
-                return this.create(data, options, repeat + 1);
+                return this.create(data, id, options, repeat + 1);
             }
             throw error;
         });
@@ -79,33 +88,16 @@ class Model extends Base
                 return model;
             })
             .then(() => {
-                if (options.small) {
-                    return model;
-                }
-
-                let details = model.details || JSON.parse(model.description);
-                let persons = [];
-
-                return P.each(details.persons || [], person => {
-                    if (!person.id_person) {
-                        return model;
-                    }
-                    return this.models.Persons.getById(person.id_person, options).then(person => {
-                        persons.push(person);
-                        return model;
-                    });
-                })
-                .then(() => {
-                    if (persons.length) {
-                        model.persons = persons;
-                    }
+                return this.models.OperationTransactionStatuses.getById(model.id_operation_status).then(status => {
+                    model.status = status;
+                    delete model.id_operation_status;
                     return model;
                 });
             })
             .then(() => {
-                return this.models.RechargeTransactionStatuses.getById(model.id_recharge_transaction_status).then(status => {
-                    model.status = status;
-                    delete model.id_recharge_transaction_status;
+                return this.models.Operators.getById(model.id_operator, options).then(operator => {
+                    model.operator = operator;
+                    delete model.id_operator;
                     return model;
                 });
             })

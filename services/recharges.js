@@ -40,7 +40,7 @@ class Service extends Base
                     next();
                 })
                 .catch(error => {
-                    result.error = error;
+                    result.error = error && error.error || error;
                     next();
                 });
             }, error => {
@@ -49,7 +49,7 @@ class Service extends Base
                 };
 
                 if (error) {
-                    response.error = error;
+                    response.error = error && error.error || error;
                 }
                 resolve(response);
             });

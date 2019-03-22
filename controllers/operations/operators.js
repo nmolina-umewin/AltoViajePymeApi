@@ -10,7 +10,7 @@ function handle(req, res)
     return Utilities.Functions.CatchError(res,
         P.bind(this)
             .then(() => {
-                return getPermissions();
+                return getOperators();
             })
             .then(models => {
                 res.send(models);
@@ -18,12 +18,12 @@ function handle(req, res)
     );
 }
 
-function getPermissions() 
+function getOperators() 
 {
-    return Models.Permissions.getAll().then(models => {
+    return Models.Operators.getAll().then(models => {
         if (!models) {
-            Log.Error('Permissions not found.');
-            return P.reject(Utilities.Errors.NotExists.Permissions);
+            Log.Error('Operators not found.');
+            return P.reject(Utilities.Errors.NotExists.Operators);
         }
         return models;
     });

@@ -9,6 +9,8 @@ const validateRecharges = require('./functions/validate');
 const populateRecharges = require('./functions/populate');
 const prepareRecharges  = require('./functions/prepare');
 const processRecharges  = require('./functions/process');
+const Errors            = Utilities.Errors;
+const Log               = Utilities.Log;
 
 function handle(req, res) 
 {
@@ -41,8 +43,11 @@ function recharge(context)
             return save(context);
         })
         .then(() => {
+            return verify(context);
+        })
+        .then(() => {
             return Models.RechargeTransactions.getById(context.transaction.id, {
-                withoutDetails: false,
+                withoutDetails: true,
                 withoutCompany: true,
                 useMaster: true,
                 force: true
@@ -71,6 +76,31 @@ function save(context)
             context.transaction = model;
             return model;
         });
+}
+
+function verify(context) 
+{
+    return new P((resolve, reject) => {
+        switch (context.transaction.id_recharge_transaction_status) {
+            case Models.RechargeTransactionStatuses.FAIL:
+                Log.Error('Recharge transaction fail.');
+                return reject(new Errors.ConflictError('Recharge transaction fail.', {
+                    id: context.transaction.id,
+                    status: 'transaction_fail'
+                }));
+
+            case Models.RechargeTransactionStatuses.INCOMPLETE:
+                let details = JSON.parse(context.transaction.description);
+
+                Log.Error('Recharge transaction incomplete.');
+                return reject(new Errors.ConflictError('Recharge transaction incomplete.', {
+                    id: context.transaction.id,
+                    persons: JSON.stringify(details.results.done),
+                    status: 'transaction_incomplete'
+                }));
+        }
+        return resolve(context.transaction);
+    });
 }
 
 module.exports = handle;

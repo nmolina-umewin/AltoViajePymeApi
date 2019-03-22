@@ -7,7 +7,7 @@ const validator = require('validator');
 const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
-function validateRechargeTransaction(context)
+function validateOperation(context)
 {
     return new P((resolve, reject) => {
         if (_.isEmpty(context)) {
@@ -26,7 +26,13 @@ function validateRechargeTransaction(context)
                 status: 'not_user'
             }));
         }
-        else if (_.isEmpty(context.payload)) {
+        else if (!context.idOperator) {
+            Log.Error('Bad request invalid id operator.');
+            return reject(new Errors.BadRequest('Bad request invalid id operator.', {
+                status: 'not_operator'
+            }));
+        }
+        else if (_.isEmpty(context.payload) || !context.payload.amount) {
             Log.Error('Bad request invalid payload.');
             return reject(new Errors.BadRequest('Bad request invalid payload.', {
                 status: 'not_payload'
@@ -36,4 +42,4 @@ function validateRechargeTransaction(context)
     });
 }
 
-module.exports = validateRechargeTransaction;
+module.exports = validateOperation;

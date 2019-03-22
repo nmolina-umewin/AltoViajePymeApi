@@ -5,11 +5,12 @@ const Status = require('../http/status');
 
 class CustomError extends Error
 {
-    constructor(message, code = Status.INTERNAL_SERVER_ERROR)
+    constructor(message, code = Status.INTERNAL_SERVER_ERROR, extra = null)
     {
         super(message);
         this.name = this.constructor.name;
         this.code = code;
+        this.extra = extra;
         Error.captureStackTrace(this, this.constructor);
     }
 

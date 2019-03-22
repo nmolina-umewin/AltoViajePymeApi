@@ -3,11 +3,13 @@
 const _ = require('lodash');
 const Base = require('./parents/model');
 
-const MODEL_NAME = 'companyStatus';
+const MODEL_NAME = 'operationTransactionStatus';
 
 const STATUSES = {
     PENDING  : 1,
-    VERIFIED : 2
+    REJECTED : 2,
+    APPROVED : 3,
+    EXPIRED  : 4
 };
 
 class Model extends Base
