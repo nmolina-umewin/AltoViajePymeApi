@@ -28,7 +28,25 @@ function handle(req, res)
                 return recharge(context);
             })
             .then(model => {
+                // Emit event recharge sube success
+                if (context.eventer) {
+                    context.eventer.emit(30001, _.extend({}, req.body, {
+                        id_recharge_transaction: model.id,
+                        id_recharge_transaction_status: model.status.id,
+                        status: model.status.description,
+                        description: model.description
+                    }));
+                }
                 res.send(model);
+            })
+            .catch(error => {
+                // Emit event recharge sube error
+                if (context.eventer) {
+                    context.eventer.emit(30002, _.extend({}, req.body, {
+                        error: `${error}`
+                    }));
+                }
+                throw error;
             })
     );
 }

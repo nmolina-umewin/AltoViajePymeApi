@@ -23,8 +23,25 @@ function handle(req, res)
                 return buy(context);
             })
             .then(model => {
-                console.log(model);
+                // Emit event buy points success
+                if (context.eventer) {
+                    context.eventer.emit(Number(`200${model.operator.id}${model.status.id}`), _.extend({}, req.body, {
+                        id_operation_transaction: model.id,
+                        id_operation_transaction_status: model.status.id,
+                        status: model.status.description,
+                        description: model.description
+                    }));
+                }
                 res.send(model);
+            })
+            .catch(error => {
+                // Emit event buy points error
+                if (context.eventer) {
+                    context.eventer.emit(Number(`200${model.idOperator}5`), _.extend({}, req.body, {
+                        error: `${error}`
+                    }));
+                }
+                throw error;
             })
     );
 }

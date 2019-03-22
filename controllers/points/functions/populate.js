@@ -10,6 +10,9 @@ function populateOperation(context)
 {
     return P.resolve()
         .then(() => {
+            return getEventer(context);
+        })
+        .then(() => {
             return getCompany(context);
         })
         .then(() => {
@@ -21,6 +24,12 @@ function populateOperation(context)
         .then(() => {
             return getProcessor(context);
         });
+}
+
+function getEventer(context) 
+{
+    context.eventer = new Utilities.Eventer();
+    return context;
 }
 
 function getCompany(context) 
