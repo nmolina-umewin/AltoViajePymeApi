@@ -30,7 +30,6 @@ function processRapipago(context)
             return Models.OperationTransactions.create(data);
         })
         .then(model => {
-            console.log(model.id);
             let data = {
                 id_operation_transaction_status: Models.OperationTransactionStatuses.APPROVED
             };
