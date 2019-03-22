@@ -41,6 +41,9 @@ app.get(    '/companies/:id/persons',                 Controllers.Companies.Pers
 app.get(    '/companies/:id/persons/groups/:idGroup', Controllers.Companies.Persons.Groups.All);
 app.get(    '/companies/:id/recharges',               Controllers.Companies.Recharges.All);
 app.get(    '/companies/:id/recharges/last',          Controllers.Companies.Recharges.Last);
+app.get(    '/companies/:id/operations',              Controllers.Companies.Operations.All);
+app.get(    '/companies/:id/operations/last',         Controllers.Companies.Operations.Last);
+app.get(    '/companies/:id/operations/pending',      Controllers.Companies.Operations.Pendings);
 app.get(    '/operations/operators',                  Controllers.Operations.Operators);
 app.get(    '/configurations',                        Controllers.Configurations.ByKey);
 

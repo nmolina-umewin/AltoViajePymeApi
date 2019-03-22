@@ -63,7 +63,7 @@ function process(context)
                 id_company: context.company.id,
                 id_user: context.user.id,
                 id_operator: context.operator.id,
-                id_operation_status: Models.OperationTransactionStatuses.PENDING,
+                id_operation_transaction_status: Models.OperationTransactionStatuses.PENDING,
                 description: JSON.stringify(context.data),
                 amount: context.payload.amount
             };

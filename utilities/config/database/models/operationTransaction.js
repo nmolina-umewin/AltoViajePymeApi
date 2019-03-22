@@ -16,7 +16,7 @@ module.exports = {
         id_company: sequelize.INTEGER(10).UNSIGNED,
         id_user: sequelize.BIGINT(20).UNSIGNED,
         id_operator: sequelize.INTEGER(10).UNSIGNED,
-        id_operation_status: sequelize.INTEGER(10).UNSIGNED,
+        id_operation_transaction_status: sequelize.INTEGER(10).UNSIGNED,
         description: sequelize.STRING,
         amount: {
             type: sequelize.DECIMAL(16, 4),

@@ -25,6 +25,15 @@ class Model extends Base
         });
     }
 
+    getByCompanyAndStatus(idCompany, idStatus, options)
+    {
+        options = options || {};
+
+        return this.query(this.queries.OperationTransactions.byCompanyAndStatus(idCompany, idStatus, options.limit || 0), options).then(models => {
+            return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));
+        });
+    }
+
     update(data, id, options, repeat = 0)
     {
         return this.transaction(transaction => {
@@ -34,7 +43,7 @@ class Model extends Base
 
             return P.bind(this)
                 .then(() => {
-                    return super.update(data, optionsPrepared);
+                    return super.update(data, id, optionsPrepared);
                 })
                 .then(() => {
                     return super.getById(id, _.extend({}, optionsPrepared || {}, {
@@ -66,7 +75,7 @@ class Model extends Base
         })
         .catch(error => {
             if (repeat < 5) {
-                return this.create(data, id, options, repeat + 1);
+                return this.update(data, id, options, repeat + 1);
             }
             throw error;
         });
@@ -88,9 +97,9 @@ class Model extends Base
                 return model;
             })
             .then(() => {
-                return this.models.OperationTransactionStatuses.getById(model.id_operation_status).then(status => {
+                return this.models.OperationTransactionStatuses.getById(model.id_operation_transaction_status).then(status => {
                     model.status = status;
-                    delete model.id_operation_status;
+                    delete model.id_operation_transaction_status;
                     return model;
                 });
             })
