@@ -10,12 +10,12 @@ module.exports = {
     replication : {
         read    : [{
             host     : 'localhost',
-            username : 'altoviaje',
+            username : 'av_db_user',
             password : '05D06455cbfcf7eec1a6d03a18a1ffbe!'
         }],
         write   : {
             host     : 'localhost',
-            username : 'altoviaje',
+            username : 'av_db_user',
             password : '05D06455cbfcf7eec1a6d03a18a1ffbe!'
         }
     },
