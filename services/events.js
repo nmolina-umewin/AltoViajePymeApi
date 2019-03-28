@@ -17,14 +17,14 @@ class Service extends Base
     getToken(options)
     {
         return this.get(_.extend({
-            uri: `/token`
+            uri: '/token'
         }, options));
     }
 
     emit(event, options)
     {
         return this.post(_.extend({
-            uri: `/transactions`,
+            uri: '/transactions',
             body: _.defaultsDeep({
                 id_application      : APPLICATION,
                 id_transaction_type : event

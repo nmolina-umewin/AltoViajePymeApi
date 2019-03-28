@@ -14,16 +14,56 @@ class Model extends Base
 
     getByUser(idUser, options)
     {
-        return this.queryOne(this.queries.Companies.byUser(idUser), options).then(company => {
-            return this.populate(company);
+        return this.queryOne(this.queries.Companies.byUser(idUser), options).then(model => {
+            if (!model) {
+                return P.resolve();
+            }
+            return this.populate(model, options);
         });
     }
 
-    populate(model)
+    getByCuit(cuit, options)
+    {
+        return this.queryOne(this.queries.Companies.byCuit(cuit), options).then(model => {
+            if (!model) {
+                return P.resolve();
+            }
+            return this.populate(model, options);
+        });
+    }
+
+    createWithAttributesWithoutTransaction(data, attributes, options)
+    {
+        options = options || {};
+
+        return P.bind(this)
+            .then(() => {
+                return super.createWithAttributesWithoutTransaction(data, attributes, options);
+            })
+            .then(model => {
+                let data = {
+                    id_company : model.id,
+                    points     : 0
+                };
+
+                return this.models.CompanyWallets.create(data).then(wallet => {
+                    model.wallet = wallet;
+                    return model;
+                });
+            });
+    }
+
+    populate(model, options)
     {
         return P.bind(this)
             .then(() => {
                 return super.populate(model);
+            })
+            .then(() => {
+                if (!options.withCode) {
+                    delete model.code;
+                }
+                return model;
             })
             .then(() => {
                 return this.queryOne(this.queries.Companies.usersCount(model.id)).then(totals => {
@@ -51,6 +91,15 @@ class Model extends Base
                     return model;
                 });
             });
+    }
+
+    cacheKey(key, options) {
+        let cacheKey = super.cacheKey(key, options);
+
+        if (options.withCode) {
+            cacheKey = `${cacheKey}.with_code`;
+        }
+        return cacheKey;
     }
 }
 

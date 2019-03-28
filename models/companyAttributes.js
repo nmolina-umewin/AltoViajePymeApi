@@ -2,7 +2,7 @@
 
 const Base = require('./parents/model');
 
-const MODEL_NAME = 'userAttribute';
+const MODEL_NAME = 'companyAttribute';
 
 class Model extends Base
 {

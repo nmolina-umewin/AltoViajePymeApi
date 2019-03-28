@@ -1,12 +1,12 @@
 "use strict";
 
-const _                = require('lodash');
-const P                = require('bluebird');
-const Models           = require('../../../models');
-const Utilities        = require('../../../utilities');
-const validator        = require('validator');
-const Errors           = Utilities.Errors;
-const Log              = Utilities.Log;
+const _         = require('lodash');
+const P         = require('bluebird');
+const Models    = require('../../../models');
+const Utilities = require('../../../utilities');
+const validator = require('validator');
+const Errors    = Utilities.Errors;
+const Log       = Utilities.Log;
 
 function handle(req, res) 
 {

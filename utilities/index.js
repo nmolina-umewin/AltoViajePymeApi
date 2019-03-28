@@ -6,6 +6,7 @@ module.exports = {
     Eventer   : require('./eventer'),
     Database  : require('./database'),
     Functions : require('./functions'),
+    Validator : require('./validator'),
     Errors    : require('./errors'),
     Http      : require('./http'),
     Time      : require('./time'),

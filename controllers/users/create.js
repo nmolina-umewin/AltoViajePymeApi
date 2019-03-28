@@ -6,6 +6,7 @@ const Models    = require('../../models');
 const Utilities = require('../../utilities');
 const validator = require('validator');
 const uuidv4    = require('uuid/v4');
+const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
 function handle(req, res) 
@@ -34,23 +35,23 @@ function validate(context)
     return new P((resolve, reject) => {
         if (_.isEmpty(context)) {
             Log.Error('Bad request invalid user information.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid user information.'));
+            return reject(new Errors.BadRequest('Bad request invalid user information.'));
         }
         else if (!context.idCompany) {
             Log.Error('Bad request invalid id company.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid id company.'));
+            return reject(new Errors.BadRequest('Bad request invalid id company.'));
         }
         else if (_.isEmpty(context.name)) {
             Log.Error('Bad request invalid name.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid name.'));
+            return reject(new Errors.BadRequest('Bad request invalid name.'));
         }
         else if (_.isEmpty(context.email) || !validator.isEmail(context.email)) {
             Log.Error('Bad request invalid email.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid email.'));
+            return reject(new Errors.BadRequest('Bad request invalid email.'));
         }
         else if (_.isEmpty(context.rol) || !validator.isInt(context.rol)) {
             Log.Error('Bad request invalid rol.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid rol.'));
+            return reject(new Errors.BadRequest('Bad request invalid rol.'));
         }
         return resolve(context);
     });
@@ -61,7 +62,7 @@ function getCompany(context)
     return Models.Companies.getById(context.idCompany).then(company => {
         if (!company) {
             Log.Error(`Company ${context.idCompany} not found.`);
-            return P.reject(Utilities.Errors.NotExists.Company);
+            return P.reject(Errors.NotExists.Company);
         }
         context.company = company;
         return context;

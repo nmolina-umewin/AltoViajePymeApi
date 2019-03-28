@@ -4,6 +4,7 @@ const _         = require('lodash');
 const P         = require('bluebird');
 const Models    = require('../../models');
 const Utilities = require('../../utilities');
+const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
 function handle(req, res) 
@@ -31,11 +32,11 @@ function validate(context)
     return new P((resolve, reject) => {
         if (_.isEmpty(context)) {
             Log.Error('Bad request invalid key.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid key.'));
+            return reject(new Errors.BadRequest('Bad request invalid key.'));
         }
         else if (_.isEmpty(context.key)) {
             Log.Error('Bad request invalid key.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid key.'));
+            return reject(new Errors.BadRequest('Bad request invalid key.'));
         }
         return resolve(context);
     });
@@ -46,7 +47,7 @@ function getConfigurations(context)
     return Models.Configurations.getByKey(`%${context.key}%`).then(configurations => {
         if (!configurations) {
             Log.Error(`Configurations for key ${context.key} not found.`);
-            return P.reject(Utilities.Errors.NotExists.Configurations);
+            return P.reject(Errors.NotExists.Configurations);
         }
         return configurations;
     });

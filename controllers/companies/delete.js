@@ -11,13 +11,16 @@ const Log       = Utilities.Log;
 function handle(req, res) 
 {
     let context = {
-        ids: req.body && req.body.ids || null
+        idCompany: req.params && req.params.id || null
     };
 
     return Utilities.Functions.CatchError(res,
         P.bind(this)
             .then(() => {
                 return validate(context);
+            })
+            .then(() => {
+                return getCompany(context);
             })
             .then(() => {
                 return update(context);
@@ -32,14 +35,26 @@ function validate(context)
 {
     return new P((resolve, reject) => {
         if (_.isEmpty(context)) {
-            Log.Error('Bad request user not found.');
-            return reject(new Errors.BadRequest('Bad request user not found.'));
+            Log.Error('Bad request invalid company.');
+            return reject(new Errors.BadRequest('Bad request invalid company.'));
         }
-        else if (_.isEmpty(context.ids) || !_.every(context.ids, validator.isInt)) {
-            Log.Error('Bad request ids user not found.');
-            return reject(new Errors.BadRequest('Bad request ids user not found.'));
+        else if (_.isEmpty(context.idCompany) || !validator.isInt(context.idCompany)) {
+            Log.Error('Bad request invalid id company.');
+            return reject(new Errors.BadRequest('Bad request invalid id company.'));
         }
         return resolve(context);
+    });
+}
+
+function getCompany(context) 
+{
+    return Models.Companies.getById(context.idCompany).then(company => {
+        if (!company) {
+            Log.Error(`Company ${context.idCompany} not found.`);
+            return P.reject(Errors.NotExists.Company);
+        }
+        context.company = company;
+        return context;
     });
 }
 
@@ -52,14 +67,12 @@ function update(context)
                 deleted_at: new Date()
             };
 
-            return Models.Users.update(data, {
-                $in: context.ids
-            });
+            return Models.Companies.update(data, context.company.id);
         })
         .then(() => {
-            Models.Companies.cacheClean();
+            Models.Companies.cacheClean(context.company.id);
             Models.Users.cacheClean();
-            return P.resolve();
+            return context;
         });
 }
 

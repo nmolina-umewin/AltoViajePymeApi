@@ -6,6 +6,7 @@ const md5       = require('md5');
 const Models    = require('../../models');
 const Utilities = require('../../utilities');
 const validator = require('validator');
+const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
 function handle(req, res) 
@@ -34,11 +35,11 @@ function validate(context)
     return new P((resolve, reject) => {
         if (_.isEmpty(context.email) || !validator.isEmail(context.email)) {
             Log.Error('Bad request email not found.');
-            return reject(new Utilities.Errors.BadRequest('Bad request email not found.'));
+            return reject(new Errors.BadRequest('Bad request email not found.'));
         }
         else if (_.isEmpty(context.password)) {
             Log.Error('Bad request password not found.');
-            return reject(new Utilities.Errors.BadRequest('Bad request password not found.'));
+            return reject(new Errors.BadRequest('Bad request password not found.'));
         }
         return resolve(context);
     });
@@ -49,11 +50,11 @@ function login(context)
     return Models.Users.login(context.email, context.password).then(user => {
         if (!user) {
             Log.Error('User not found.');
-            return P.reject(Utilities.Errors.NotExists.User);
+            return P.reject(Errors.NotExists.User);
         }
         if (user.status.id !== Models.UserStatuses.VERIFIED) {
             Log.Error('User unauthorized.');
-            return P.reject(new Utilities.Errors.Unauthorized('User unauthorized'));
+            return P.reject(new Errors.Unauthorized('User unauthorized'));
         }
         return user;
     });

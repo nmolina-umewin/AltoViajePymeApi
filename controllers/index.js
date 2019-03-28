@@ -6,7 +6,7 @@ module.exports = {
     Auth           : require('./auth'),
     Users          : require('./users'),
     Groups         : require('./groups'),
-    Points         : require('./points'),
+    // Points         : require('./points'),
     Persons        : require('./persons'),
     Recharges      : require('./recharges'),
     Companies      : require('./companies'),

@@ -14,6 +14,9 @@ class Model extends Base
     getByToken(token, options)
     {
         return this.queryOne(this.queries.UserTokens.byToken(token), options).then(model => {
+            if (!model) {
+                return P.resolve();
+            }
             return this.populate(model, options);
         });
     }

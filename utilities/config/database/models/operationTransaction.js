@@ -17,11 +17,11 @@ module.exports = {
         id_user: sequelize.BIGINT(20).UNSIGNED,
         id_operator: sequelize.INTEGER(10).UNSIGNED,
         id_operation_transaction_status: sequelize.INTEGER(10).UNSIGNED,
-        description: sequelize.STRING,
         amount: {
             type: sequelize.DECIMAL(16, 4),
             defaultValue: 0
         },
+        description: sequelize.STRING,
         created_at: {
             type: sequelize.DATE,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')

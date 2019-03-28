@@ -3,6 +3,7 @@
 const _         = require('lodash');
 const P         = require('bluebird');
 const Utilities = require('../../../utilities');
+const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
 function prepareRechargeTransaction(context) 
@@ -44,14 +45,14 @@ function validate(context)
     return new P((resolve, reject) => {
         if (context.total === 0) {
             Log.Error('Bad request invalid amount.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid amount.', {
+            return reject(new Errors.BadRequest('Bad request invalid amount.', {
                 status: 'invalid_amounts'
             }));
         }
 
         if (context.company.wallet.points < context.total) {
             Log.Error('Bad request insufficient points.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid id company.', {
+            return reject(new Errors.BadRequest('Bad request invalid id company.', {
                 status: 'insufficient_points'
             }));
         }

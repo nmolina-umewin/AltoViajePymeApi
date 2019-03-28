@@ -17,6 +17,7 @@ module.exports = {
             type: sequelize.INTEGER(10).UNSIGNED,
             defaultValue: 1
         },
+        code: sequelize.STRING,
         active: {
             type: sequelize.INTEGER,
             defaultValue: 0

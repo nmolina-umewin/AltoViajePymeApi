@@ -5,6 +5,7 @@ const P         = require('bluebird');
 const Models    = require('../../models');
 const Utilities = require('../../utilities');
 const validator = require('validator');
+const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
 function handle(req, res) 
@@ -33,19 +34,19 @@ function validate(context)
     return new P((resolve, reject) => {
         if (_.isEmpty(context)) {
             Log.Error('Bad request invalid person information.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid person information.'));
+            return reject(new Errors.BadRequest('Bad request invalid person information.'));
         }
         else if (!context.idCompany) {
             Log.Error('Bad request invalid id company.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid id company.'));
+            return reject(new Errors.BadRequest('Bad request invalid id company.'));
         }
         else if (_.isEmpty(context.name)) {
             Log.Error('Bad request invalid name.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid name.'));
+            return reject(new Errors.BadRequest('Bad request invalid name.'));
         }
         else if (!_.isEmpty(context.persons) && !_.every(context.persons, validator.isInt)) {
             Log.Error('Bad request invalid persons.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid persons.'));
+            return reject(new Errors.BadRequest('Bad request invalid persons.'));
         }
         return resolve(context);
     });
@@ -56,7 +57,7 @@ function getCompany(context)
     return Models.Companies.getById(context.idCompany).then(company => {
         if (!company) {
             Log.Error(`Company ${context.idCompany} not found.`);
-            return P.reject(Utilities.Errors.NotExists.Company);
+            return P.reject(Errors.NotExists.Company);
         }
         context.company = company;
         return context;

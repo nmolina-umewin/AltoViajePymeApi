@@ -3,15 +3,17 @@
 const P         = require('bluebird');
 const Models    = require('../../models');
 const Utilities = require('../../utilities');
-const Errors    = Utilities.Errors;
-const Log       = Utilities.Log;
 
 function handle(req, res) 
 {
+    let context = {
+        idCompany: req.params && req.params.id
+    };
+
     return Utilities.Functions.CatchError(res,
         P.bind(this)
             .then(() => {
-                return getPermissions();
+                return getCompanies(context);
             })
             .then(models => {
                 res.send(models);
@@ -19,14 +21,10 @@ function handle(req, res)
     );
 }
 
-function getPermissions() 
+function getCompanies(context) 
 {
-    return Models.Permissions.getAll().then(models => {
-        if (!models) {
-            Log.Error('Permissions not found.');
-            return P.reject(Errors.NotExists.Permissions);
-        }
-        return models;
+    return Models.Companies.getAll().then(models => {
+        return models || [];
     });
 }
 

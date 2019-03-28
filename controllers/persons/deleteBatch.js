@@ -5,6 +5,7 @@ const P         = require('bluebird');
 const Models    = require('../../models');
 const Utilities = require('../../utilities');
 const validator = require('validator');
+const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
 function handle(req, res) 
@@ -32,11 +33,11 @@ function validate(context)
     return new P((resolve, reject) => {
         if (_.isEmpty(context)) {
             Log.Error('Bad request person not found.');
-            return reject(new Utilities.Errors.BadRequest('Bad request person not found.'));
+            return reject(new Errors.BadRequest('Bad request person not found.'));
         }
         else if (_.isEmpty(context.ids) || !_.every(context.ids, validator.isInt)) {
             Log.Error('Bad request ids person not found.');
-            return reject(new Utilities.Errors.BadRequest('Bad request ids person not found.'));
+            return reject(new Errors.BadRequest('Bad request ids person not found.'));
         }
         return resolve(context);
     });

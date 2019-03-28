@@ -9,13 +9,15 @@ function handle(req, res, next)
 
     function response(error, alive)
     {
+        let database = error ? { error } : {
+            alive: alive ? true : false
+        };
+
         res.send({
             description: pkg.description,
             environment: process.env.NODE_ENV || 'production',
             version: pkg.version,
-            database: {
-                alive
-            }
+            database
         });
     }
 }

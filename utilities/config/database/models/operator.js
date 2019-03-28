@@ -18,6 +18,10 @@ module.exports = {
             type: sequelize.INTEGER,
             defaultValue: 1
         },
+        priority: {
+            type: sequelize.INTEGER(10).UNSIGNED,
+            defaultValue: 0
+        },
         created_at: {
             type: sequelize.DATE,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')

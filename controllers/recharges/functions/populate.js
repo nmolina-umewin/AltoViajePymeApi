@@ -3,6 +3,7 @@
 const P         = require('bluebird');
 const Models    = require('../../../models');
 const Utilities = require('../../../utilities');
+const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
 function populateRechargeTransaction(context) 
@@ -33,7 +34,7 @@ function getCompany(context)
     return Models.Companies.getById(context.idCompany).then(company => {
         if (!company) {
             Log.Error(`Company ${context.idCompany} not found.`);
-            return P.reject(Utilities.Errors.NotExists.Company);
+            return P.reject(Errors.NotExists.Company);
         }
         context.company = company;
         return context;
@@ -45,7 +46,7 @@ function getUser(context)
     return Models.Users.getById(context.idUser).then(user => {
         if (!user) {
             Log.Error(`User ${context.idUser} not found.`);
-            return P.reject(Utilities.Errors.NotExists.User);
+            return P.reject(Errors.NotExists.User);
         }
         context.user = user;
         return context;
@@ -60,7 +61,7 @@ function getPersons(context)
         return Models.Persons.getById(Number(model.person)).then(person => {
             if (!person) {
                 Log.Error(`Person ${model.person} not found.`);
-                return P.reject(new Utilities.Errors.BadRequest('Bad request invalid person.', {
+                return P.reject(new Errors.BadRequest('Bad request invalid person.', {
                     status: 'invalid_person'
                 }));
             }

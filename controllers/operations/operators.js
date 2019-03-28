@@ -3,6 +3,7 @@
 const P         = require('bluebird');
 const Models    = require('../../models');
 const Utilities = require('../../utilities');
+const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
 function handle(req, res) 
@@ -20,10 +21,14 @@ function handle(req, res)
 
 function getOperators() 
 {
-    return Models.Operators.getAll().then(models => {
+    let options = {
+        order: [['priority', 'ASC']]
+    };
+
+    return Models.Operators.getAll(options).then(models => {
         if (!models) {
             Log.Error('Operators not found.');
-            return P.reject(Utilities.Errors.NotExists.Operators);
+            return P.reject(Errors.NotExists.Operators);
         }
         return models;
     });

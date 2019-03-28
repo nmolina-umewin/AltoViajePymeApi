@@ -1,10 +1,13 @@
 "use strict";
 
 module.exports = {
-    byUser : function(idUser) {
+    byUser      : function(idUser) {
         return `SELECT c.* FROM user_companies AS uc JOIN companies AS c ON c.id = uc.id_company WHERE uc.id_user = ${idUser}`;
     },
-    usersCount : function(idCompany) {
+    byCuit      : function(cuit) {
+        return `SELECT c.* FROM company_attributes AS ca JOIN companies AS c ON c.id = ca.id_company WHERE ca.id_attribute = 105 AND ca.description = ${cuit}`;
+    },
+    usersCount  : function(idCompany) {
         return `SELECT COUNT(u.id) AS total FROM users AS u JOIN user_companies AS c ON c.id_user = u.id AND c.id_company = ${idCompany} WHERE u.deleted_at IS NULL`;
     },
     personsCount : function(idCompany) {

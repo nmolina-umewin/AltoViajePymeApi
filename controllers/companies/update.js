@@ -11,7 +11,7 @@ const Log       = Utilities.Log;
 function handle(req, res) 
 {
     let context = _.extend({}, req.body, {
-        idUser: req.params && req.params.id || null
+        idCompany: req.params && req.params.id || null
     });
 
     return Utilities.Functions.CatchError(res,
@@ -20,7 +20,7 @@ function handle(req, res)
                 return validate(context);
             })
             .then(() => {
-                return getUser(context);
+                return getCompany(context);
             })
             .then(() => {
                 return update(context);
@@ -35,33 +35,29 @@ function validate(context)
 {
     return new P((resolve, reject) => {
         if (_.isEmpty(context)) {
-            Log.Error('Bad request invalid user information.');
-            return reject(new Errors.BadRequest('Bad request invalid user information.'));
+            Log.Error('Bad request invalid company information.');
+            return reject(new Errors.BadRequest('Bad request invalid company information.'));
         }
-        else if (_.isEmpty(context.idUser) || !validator.isInt(context.idUser)) {
-            Log.Error('Bad request invalid id user.');
-            return reject(new Errors.BadRequest('Bad request invalid id user.'));
+        else if (_.isEmpty(context.idCompany) || !validator.isInt(context.idCompany)) {
+            Log.Error('Bad request invalid id company.');
+            return reject(new Errors.BadRequest('Bad request invalid id company.'));
         }
         else if (!_.isEmpty(context.email) && !validator.isEmail(context.email)) {
             Log.Error('Bad request invalid email.');
             return reject(new Errors.BadRequest('Bad request invalid email.'));
         }
-        else if (!_.isEmpty(context.rol) && !validator.isInt(context.rol)) {
-            Log.Error('Bad request invalid rol.');
-            return reject(new Errors.BadRequest('Bad request invalid rol.'));
-        }
         return resolve(context);
     });
 }
 
-function getUser(context) 
+function getCompany(context) 
 {
-    return Models.Users.getById(context.idUser).then(user => {
-        if (!user) {
-            Log.Error(`User ${context.idUser} not found.`);
-            return reject(Errors.NotExists.User);
+    return Models.Companies.getById(context.idCompany).then(company => {
+        if (!company) {
+            Log.Error(`Company ${context.idCompany} not found.`);
+            return reject(Errors.NotExists.Company);
         }
-        context.user = user;
+        context.company = company;
         return context;
     });
 }
@@ -76,7 +72,7 @@ function update(context)
             return save(context);
         })
         .then(() => {
-            return Models.Users.getById(context.user.id, {
+            return Models.Companies.getById(context.company.id, {
                 useMaster: true,
                 force: true
             });
@@ -89,16 +85,34 @@ function prepare(context)
         .then(() => {
             context.attributes = [];
 
-            if (context.name) {
-                context.attributes.push({
-                    name  : 'name',
-                    value : context.name
-                });
-            }
             if (context.email) {
                 context.attributes.push({
                     name  : 'email',
                     value : context.email
+                });
+            }
+            if (context.address) {
+                context.attributes.push({
+                    name  : 'address',
+                    value : context.address
+                });
+            }
+            if (context.phone) {
+                context.attributes.push({
+                    name  : 'phone',
+                    value : context.phone
+                });
+            }
+            if (context.alternative_phone) {
+                context.attributes.push({
+                    name  : 'alternative_phone',
+                    value : context.alternative_phone
+                });
+            }
+            if (context.image) {
+                context.attributes.push({
+                    name  : 'image',
+                    value : context.image
                 });
             }
             return context;
@@ -110,20 +124,17 @@ function save(context)
     return P.resolve()
         .then(() => {
             let data = {
-                active: !_.isNil(context.active) ? context.active : context.user.active
+                id_company_status : !_.isNil(context.status) ? context.status : context.company.status.id,
+                active            : !_.isNil(context.active) ? context.active : context.company.active,
             };
             let options = {};
 
-            if (context.rol) {
-                options.idPermission = Number(context.rol);
-            }
-
-            return Models.Users.updateWithAttributes(data, context.user.id, context.attributes, options);
+            return Models.Companies.updateWithAttributes(data, context.company.id, context.attributes, options);
         })
         .then(model => {
             Models.Companies.cacheClean(context.idCompany);
-            Models.Users.cacheClean(context.user.id);
-            context.user = model;
+            Models.Users.cacheClean();
+            context.company = model;
             return model;
         });
 }

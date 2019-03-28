@@ -4,6 +4,7 @@ const _         = require('lodash');
 const P         = require('bluebird');
 const Models    = require('../../models');
 const Utilities = require('../../utilities');
+const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
 function handle(req, res) 
@@ -37,7 +38,7 @@ function validate(context)
     return new P((resolve, reject) => {
         if (_.isEmpty(context.token)) {
             Log.Error('Bad request invalid token.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid token.'));
+            return reject(new Errors.BadRequest('Bad request invalid token.'));
         }
         return resolve(context);
     });
@@ -48,7 +49,7 @@ function getToken(context)
     return Models.UserTokens.getByToken(context.token).then(token => {
         if (!token) {
             Log.Error(`User token not found.`);
-            return P.reject(Utilities.Errors.NotExists.Token);
+            return P.reject(Errors.NotExists.Token);
         }
         context.token = token;
         return context;
@@ -78,7 +79,7 @@ function getUser(context)
     return Models.Users.getById(context.token.id_user).then(user => {
         if (!user) {
             Log.Error(`User ${context.token.id_user} not found.`);
-            return P.reject(Utilities.Errors.NotExists.User);
+            return P.reject(Errors.NotExists.User);
         }
         return user;
     });

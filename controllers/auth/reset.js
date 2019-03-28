@@ -5,6 +5,7 @@ const P         = require('bluebird');
 const md5       = require('md5');
 const Models    = require('../../models');
 const Utilities = require('../../utilities');
+const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
 function handle(req, res) 
@@ -36,11 +37,11 @@ function validate(context)
     return new P((resolve, reject) => {
         if (_.isEmpty(context.idUser)) {
             Log.Error('Bad request invalid id user.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid id user.'));
+            return reject(new Errors.BadRequest('Bad request invalid id user.'));
         }
         else if (_.isEmpty(context.password)) {
             Log.Error('Bad request invalid password.');
-            return reject(new Utilities.Errors.BadRequest('Bad request invalid password.'));
+            return reject(new Errors.BadRequest('Bad request invalid password.'));
         }
         return resolve(context);
     });
@@ -51,7 +52,7 @@ function getUser(context)
     return Models.Users.getById(context.idUser).then(user => {
         if (!user) {
             Log.Error(`User ${context.idUser} not found.`);
-            return P.reject(Utilities.Errors.NotExists.User);
+            return P.reject(Errors.NotExists.User);
         }
         context.user = user;
         return user;
