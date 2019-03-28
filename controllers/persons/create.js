@@ -36,7 +36,7 @@ function validate(context)
             Log.Error('Bad request invalid person information.');
             return reject(new Errors.BadRequest('Bad request invalid person information.'));
         }
-        else if (!context.idCompany) {
+        else if (!Utilities.Validator.isInt(context.idCompany)) {
             Log.Error('Bad request invalid id company.');
             return reject(new Errors.BadRequest('Bad request invalid id company.'));
         }
@@ -52,7 +52,7 @@ function validate(context)
             Log.Error('Bad request invalid email.');
             return reject(new Errors.BadRequest('Bad request invalid email.'));
         }
-        else if (_.isEmpty(context.groups) || !_.every(context.groups, validator.isInt)) {
+        else if (_.isEmpty(context.groups) || !_.every(context.groups, Utilities.Validator.isInt)) {
             Log.Error('Bad request invalid groups.');
             return reject(new Errors.BadRequest('Bad request invalid groups.'));
         }

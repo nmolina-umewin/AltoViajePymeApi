@@ -20,7 +20,7 @@ function handle(req, res)
                 return validate(context);
             })
             .then(() => {
-                return getCompany(context);
+                return verify(context);
             })
             .then(() => {
                 return update(context);
@@ -38,7 +38,7 @@ function validate(context)
             Log.Error('Bad request invalid company information.');
             return reject(new Errors.BadRequest('Bad request invalid company information.'));
         }
-        else if (_.isEmpty(context.idCompany) || !validator.isInt(context.idCompany)) {
+        else if (!Utilities.Validator.isInt(context.idCompany)) {
             Log.Error('Bad request invalid id company.');
             return reject(new Errors.BadRequest('Bad request invalid id company.'));
         }
@@ -50,6 +50,17 @@ function validate(context)
     });
 }
 
+function verify(context) 
+{
+    return P.resolve()
+        .then(() => {
+            return getCompany(context);
+        })
+        .then(() => {
+            return getCompanyByEmail(context);
+        });
+}
+
 function getCompany(context) 
 {
     return Models.Companies.getById(context.idCompany).then(company => {
@@ -59,6 +70,28 @@ function getCompany(context)
         }
         context.company = company;
         return context;
+    });
+}
+
+function getCompanyByEmail(context)
+{
+    if (!context.email || context.email === _.find(context.company.attributes, ['field.name', 'email']).value) {
+        return P.resolve(context);
+    }
+
+    return new P((resolve, reject) => {
+        return Models.Companies.getByEmail(context.email, {
+            useMaster: true,
+            force: true
+        })
+        .then(company => {
+            if (company) {
+                Log.Error(`Company with email ${context.email} already exists.`);
+                throw new Errors.ConflictError(`Company with email ${context.email} already exists.`);
+            }
+            return resolve();
+        })
+        .catch(reject);
     });
 }
 

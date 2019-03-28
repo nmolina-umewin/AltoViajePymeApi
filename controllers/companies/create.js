@@ -23,9 +23,6 @@ function handle(req, res)
                 return verify(context);
             })
             .then(() => {
-                return getCompany(context);
-            })
-            .then(() => {
                 return create(context);
             })
             .then(model => {
@@ -55,6 +52,20 @@ function validate(context)
 
 function verify(context) 
 {
+    return P.resolve()
+        .then(() => {
+            return getCompanyByCuit(context);
+        })
+        .then(() => {
+            return getCompanyByEmail(context);
+        })
+        .then(() => {
+            return getCompany(context);
+        });
+}
+
+function getCompanyByCuit(context) 
+{
     return new P((resolve, reject) => {
         return Models.Companies.getByCuit(context.cuit, {
             useMaster: true,
@@ -64,6 +75,24 @@ function verify(context)
             if (company) {
                 Log.Error(`Company with cuit ${context.cuit} already exists.`);
                 throw new Errors.ConflictError(`Company with cuit ${context.cuit} already exists.`);
+            }
+            return resolve();
+        })
+        .catch(reject);
+    });
+}
+
+function getCompanyByEmail(context)
+{
+    return new P((resolve, reject) => {
+        return Models.Companies.getByEmail(context.email, {
+            useMaster: true,
+            force: true
+        })
+        .then(company => {
+            if (company) {
+                Log.Error(`Company with email ${context.email} already exists.`);
+                throw new Errors.ConflictError(`Company with email ${context.email} already exists.`);
             }
             return resolve();
         })
@@ -158,7 +187,7 @@ function save(context)
             let data = {
                 id_company_status : Models.CompanyStatuses.PENDING,
                 code              : uuidv4(),
-                active            : 0
+                active            : 1
             };
 
             return Models.Companies.createWithAttributes(data, context.attributes);

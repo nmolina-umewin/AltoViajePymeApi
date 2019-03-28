@@ -20,7 +20,7 @@ function handle(req, res)
                 return validate(context);
             })
             .then(() => {
-                return getAdministrator(context);
+                return verify(context);
             })
             .then(() => {
                 return update(context);
@@ -38,7 +38,7 @@ function validate(context)
             Log.Error('Bad request invalid administrator information.');
             return reject(new Errors.BadRequest('Bad request invalid administrator information.'));
         }
-        else if (_.isEmpty(context.idAdministrator) || !validator.isInt(context.idAdministrator)) {
+        else if (!Utilities.Validator.isInt(context.idAdministrator)) {
             Log.Error('Bad request invalid id administrator.');
             return reject(new Errors.BadRequest('Bad request invalid id administrator.'));
         }
@@ -54,6 +54,17 @@ function validate(context)
     });
 }
 
+function verify(context) 
+{
+    return P.resolve()
+        .then(() => {
+            return getAdministrator(context);
+        })
+        .then(() => {
+            return getAdministratorByEmail(context);
+        });
+}
+
 function getAdministrator(context) 
 {
     return Models.Administrators.getById(context.idAdministrator).then(administrator => {
@@ -63,6 +74,28 @@ function getAdministrator(context)
         }
         context.administrator = administrator;
         return context;
+    });
+}
+
+function getAdministratorByEmail(context) 
+{
+    if (!context.email || context.email === _.find(context.administrator.attributes, ['field.name', 'email']).value) {
+        return P.resolve(context);
+    }
+
+    return new P((resolve, reject) => {
+        return Models.Administrators.getByEmail(context.email, {
+            useMaster: true,
+            force: true
+        })
+        .then(administrator => {
+            if (administrator) {
+                Log.Error(`Administrator with email ${context.email} already exists.`);
+                throw new Errors.ConflictError(`Administrator with email ${context.email} already exists.`);
+            }
+            return resolve();
+        })
+        .catch(reject);
     });
 }
 

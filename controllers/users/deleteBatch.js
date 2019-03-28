@@ -4,7 +4,6 @@ const _         = require('lodash');
 const P         = require('bluebird');
 const Models    = require('../../models');
 const Utilities = require('../../utilities');
-const validator = require('validator');
 const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
@@ -35,7 +34,7 @@ function validate(context)
             Log.Error('Bad request user not found.');
             return reject(new Errors.BadRequest('Bad request user not found.'));
         }
-        else if (_.isEmpty(context.ids) || !_.every(context.ids, validator.isInt)) {
+        else if (_.isEmpty(context.ids) || !_.every(context.ids, Utilities.Validator.isInt)) {
             Log.Error('Bad request ids user not found.');
             return reject(new Errors.BadRequest('Bad request ids user not found.'));
         }

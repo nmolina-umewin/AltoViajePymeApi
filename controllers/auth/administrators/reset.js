@@ -3,14 +3,17 @@
 const _         = require('lodash');
 const P         = require('bluebird');
 const md5       = require('md5');
-const Models    = require('../../models');
-const Utilities = require('../../utilities');
+const Models    = require('../../../models');
+const Utilities = require('../../../utilities');
 const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
 function handle(req, res) 
 {
     let context = _.clone(req.body);
+
+    context.idAdministrator = context.idAdministrator || context.id_administrator;
+    delete context.id_administrator;
 
     return Utilities.Functions.CatchError(res,
         P.bind(this)
@@ -35,7 +38,7 @@ function handle(req, res)
 function validate(context)
 {
     return new P((resolve, reject) => {
-        if (_.isEmpty(context.idAdministrator)) {
+        if (!Utilities.Validator.isInt(context.idAdministrator)) {
             Log.Error('Bad request invalid id administrator.');
             return reject(new Errors.BadRequest('Bad request invalid id administrator.'));
         }

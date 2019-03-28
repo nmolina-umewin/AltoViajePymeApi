@@ -3,7 +3,6 @@
 const _         = require('lodash');
 const P         = require('bluebird');
 const Utilities = require('../../../utilities');
-const validator = require('validator');
 const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
@@ -14,13 +13,13 @@ function validateRechargeTransaction(context)
             Log.Error('Bad request invalid payload information.');
             return reject(new Errors.BadRequest('Bad request invalid payload information.'));
         }
-        else if (!context.idCompany) {
+        else if (!Utilities.Validator.isInt(context.idCompany)) {
             Log.Error('Bad request invalid id company.');
             return reject(new Errors.BadRequest('Bad request invalid id company.', {
                 status: 'not_company'
             }));
         }
-        else if (!context.idUser) {
+        else if (!Utilities.Validator.isInt(context.idUser)) {
             Log.Error('Bad request invalid id user.');
             return reject(new Errors.BadRequest('Bad request invalid id user.', {
                 status: 'not_user'

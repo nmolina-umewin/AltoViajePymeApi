@@ -3,6 +3,7 @@
 module.exports = {
     Models                : require('./models'),
     Administrators        : require('./administrators'),
+    AdministratorTokens   : require('./administratorTokens'),
     Attributes            : require('./attributes'),
     Companies             : require('./companies'),
     Configurations        : require('./configurations'),

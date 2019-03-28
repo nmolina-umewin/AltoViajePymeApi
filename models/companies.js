@@ -32,6 +32,16 @@ class Model extends Base
         });
     }
 
+    getByEmail(email, options)
+    {
+        return this.queryOne(this.queries.Companies.byEmail(email), options).then(model => {
+            if (!model) {
+                return P.resolve();
+            }
+            return this.populate(model, options);
+        });
+    }
+
     createWithAttributesWithoutTransaction(data, attributes, options)
     {
         options = options || {};

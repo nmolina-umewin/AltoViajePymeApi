@@ -4,7 +4,6 @@ const _         = require('lodash');
 const P         = require('bluebird');
 const Models    = require('../../../models');
 const Utilities = require('../../../utilities');
-const validator = require('validator');
 const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
@@ -31,7 +30,7 @@ function handle(req, res)
 function validate(context)
 {
     return new P((resolve, reject) => {
-        if (_.isEmpty(context.idCompany) || !validator.isInt(context.idCompany)) {
+        if (!Utilities.Validator.isInt(context.idCompany)) {
             Log.Error('Bad request invalid id company.');
             return reject(new Errors.BadRequest('Bad request invalid id company.'));
         }

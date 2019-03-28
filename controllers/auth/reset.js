@@ -12,6 +12,9 @@ function handle(req, res)
 {
     let context = _.clone(req.body);
 
+    context.idUser = context.idUser || context.id_user;
+    delete context.id_user;
+
     return Utilities.Functions.CatchError(res,
         P.bind(this)
             .then(() => {
@@ -35,7 +38,7 @@ function handle(req, res)
 function validate(context)
 {
     return new P((resolve, reject) => {
-        if (_.isEmpty(context.idUser)) {
+        if (!Utilities.Validator.isInt(context.idUser)) {
             Log.Error('Bad request invalid id user.');
             return reject(new Errors.BadRequest('Bad request invalid id user.'));
         }

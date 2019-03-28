@@ -4,6 +4,7 @@ module.exports = {
     Administrator              : require('./administrator'),
     AdministratorAttribute     : require('./administratorAttribute'),
     AdministratorPermission    : require('./administratorPermission'),
+    AdministratorToken         : require('./administratorToken'),
     Attribute                  : require('./attribute'),
     AttributeType              : require('./attributeType'),
     CardType                   : require('./cardType'),

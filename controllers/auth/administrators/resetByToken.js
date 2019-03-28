@@ -2,8 +2,8 @@
 
 const _         = require('lodash');
 const P         = require('bluebird');
-const Models    = require('../../models');
-const Utilities = require('../../utilities');
+const Models    = require('../../../models');
+const Utilities = require('../../../utilities');
 const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 

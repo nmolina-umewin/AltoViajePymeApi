@@ -4,7 +4,6 @@ const _         = require('lodash');
 const P         = require('bluebird');
 const Models    = require('../../models');
 const Utilities = require('../../utilities');
-const validator = require('validator');
 const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
@@ -31,7 +30,7 @@ function handle(req, res)
 function validate(context)
 {
     return new P((resolve, reject) => {
-        if (_.isEmpty(context.idAdministrator) || !validator.isInt(context.idAdministrator)) {
+        if (!Utilities.Validator.isInt(context.idAdministrator)) {
             Log.Error('Bad request invalid id administrator.');
             return reject(new Errors.BadRequest('Bad request invalid id administrator.'));
         }

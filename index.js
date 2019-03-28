@@ -21,6 +21,7 @@ app.post(   '/administrators/reset',                  Controllers.Auth.Administr
 app.get(    '/administrators/reset/:token',           Controllers.Auth.Administrators.ResetByToken);
 app.post(   '/administrators/forgot',                 Controllers.Auth.Administrators.ForgotPassword);
 app.get(    '/administrators/permissions',            Controllers.Administrators.Permissions.All);
+app.get(    '/administrators',                        Controllers.Administrators.List);
 app.post(   '/administrators',                        Controllers.Administrators.Create);
 app.put(    '/administrators/:id',                    Controllers.Administrators.Update);
 app.get(    '/administrators/:id',                    Controllers.Administrators.ById);

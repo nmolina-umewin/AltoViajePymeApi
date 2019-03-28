@@ -20,7 +20,7 @@ function handle(req, res)
                 return validate(context);
             })
             .then(() => {
-                return getPermission(context);
+                return verify(context);
             })
             .then(() => {
                 return create(context);
@@ -59,6 +59,35 @@ function validate(context)
             return reject(new Errors.BadRequest('Bad request invalid rol.'));
         }
         return resolve(context);
+    });
+}
+
+function verify(context) 
+{
+    return P.resolve()
+        .then(() => {
+            return getAdministrator(context);
+        })
+        .then(() => {
+            return getPermission(context);
+        });
+}
+
+function getAdministrator(context)
+{
+    return new P((resolve, reject) => {
+        return Models.Administrators.getByEmail(context.email, {
+            useMaster: true,
+            force: true
+        })
+        .then(administrator => {
+            if (administrator) {
+                Log.Error(`Administrator with email ${context.email} already exists.`);
+                throw new Errors.ConflictError(`Administrator with email ${context.email} already exists.`);
+            }
+            return resolve();
+        })
+        .catch(reject);
     });
 }
 
