@@ -15,6 +15,17 @@ const app = Functions.App;
 // =========================
 app.get(    '/config',                                Controllers.Config);
 app.get(    '/health',                                Controllers.Health);
+
+app.post(   '/administrators/login',                  Controllers.Auth.Administrators.Login);
+app.post(   '/administrators/reset',                  Controllers.Auth.Administrators.Reset);
+app.get(    '/administrators/reset/:token',           Controllers.Auth.Administrators.ResetByToken);
+app.post(   '/administrators/forgot',                 Controllers.Auth.Administrators.ForgotPassword);
+app.get(    '/administrators/permissions',            Controllers.Administrators.Permissions.All);
+app.post(   '/administrators',                        Controllers.Administrators.Create);
+app.put(    '/administrators/:id',                    Controllers.Administrators.Update);
+app.get(    '/administrators/:id',                    Controllers.Administrators.ById);
+app.delete( '/administrators/:id',                    Controllers.Administrators.Delete);
+
 app.get(    '/permissions',                           Controllers.Permissions.All);
 app.post(   '/login',                                 Middlewares.Eventer, Controllers.Auth.Login);
 // app.post(   '/register',                              Middlewares.Eventer, Controllers.Auth.Register);
@@ -26,16 +37,20 @@ app.put(    '/users/:id',                             Middlewares.Eventer, Contr
 app.get(    '/users/:id',                             Controllers.Users.ById);
 app.delete( '/users/:id',                             Middlewares.Eventer, Controllers.Users.Delete);
 app.post(   '/users/delete/batch',                    Middlewares.Eventer, Controllers.Users.DeleteBatch);
+
 app.post(   '/groups',                                Middlewares.Eventer, Controllers.Groups.Create);
 app.get(    '/groups/:id',                            Middlewares.Eventer, Controllers.Groups.ById);
-// app.post(   '/points/buy',                            Middlewares.Eventer, Controllers.Points.Buy);
 app.post(   '/persons',                               Middlewares.Eventer, Controllers.Persons.Create);
 app.put(    '/persons/:id',                           Middlewares.Eventer, Controllers.Persons.Update);
 app.get(    '/persons/:id',                           Controllers.Persons.ById);
 app.delete( '/persons/:id',                           Middlewares.Eventer, Controllers.Persons.Delete);
 app.post(   '/persons/delete/batch',                  Middlewares.Eventer, Controllers.Persons.DeleteBatch);
+
+// app.post(   '/points/buy',                            Middlewares.Eventer, Controllers.Points.Buy);
+
 app.post(   '/recharges',                             Middlewares.Eventer, Controllers.Recharges.Recharge);
 app.get(    '/recharges/:id',                         Controllers.Recharges.ById);
+
 app.post(   '/companies',                             Controllers.Companies.Create);
 app.get(    '/companies',                             Controllers.Companies.List);
 app.put(    '/companies/:id',                         Controllers.Companies.Update);
@@ -51,6 +66,7 @@ app.get(    '/companies/:id/operations',              Controllers.Companies.Oper
 app.get(    '/companies/:id/operations/last',         Controllers.Companies.Operations.Last);
 app.get(    '/companies/:id/operations/pending',      Controllers.Companies.Operations.Pendings);
 app.get(    '/operations/operators',                  Controllers.Operations.Operators);
+
 app.get(    '/configurations',                        Controllers.Configurations.ByKey);
 
 

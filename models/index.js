@@ -1,6 +1,10 @@
 "use strict";
 
 module.exports = {
+    Administrators               : require('./administrators'),
+    AdministratorAttributes      : require('./administratorAttributes'),
+    AdministratorPermissions     : require('./administratorPermissions'),
+    AdministratorTokens          : require('./administratorTokens'),
     Attributes                   : require('./attributes'),
     AttributeTypes               : require('./attributeTypes'),
     CardTypes                    : require('./cardTypes'),

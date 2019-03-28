@@ -2,6 +2,7 @@
 
 module.exports = {
     Models                : require('./models'),
+    Administrators        : require('./administrators'),
     Attributes            : require('./attributes'),
     Companies             : require('./companies'),
     Configurations        : require('./configurations'),

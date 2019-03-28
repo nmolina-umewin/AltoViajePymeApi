@@ -4,6 +4,5 @@ module.exports = {
     Login          : require('./login'),
     Reset          : require('./reset'),
     ResetByToken   : require('./resetByToken'),
-    ForgotPassword : require('./forgotPassword'),
-    Administrators : require('./administrators')
+    ForgotPassword : require('./forgotPassword')
 };

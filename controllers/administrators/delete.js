@@ -11,7 +11,7 @@ const Log       = Utilities.Log;
 function handle(req, res) 
 {
     let context = {
-        idUser: req.params && req.params.id || null
+        idAdministrator: req.params && req.params.id || null
     };
 
     return Utilities.Functions.CatchError(res,
@@ -20,7 +20,7 @@ function handle(req, res)
                 return validate(context);
             })
             .then(() => {
-                return getUser(context);
+                return getAdministrator(context);
             })
             .then(() => {
                 return update(context);
@@ -35,25 +35,25 @@ function validate(context)
 {
     return new P((resolve, reject) => {
         if (_.isEmpty(context)) {
-            Log.Error('Bad request invalid user.');
-            return reject(new Errors.BadRequest('Bad request invalid user.'));
+            Log.Error('Bad request invalid administrator.');
+            return reject(new Errors.BadRequest('Bad request invalid administrator.'));
         }
-        else if (_.isEmpty(context.idUser) || !validator.isInt(context.idUser)) {
-            Log.Error('Bad request invalid id user.');
-            return reject(new Errors.BadRequest('Bad request invalid id user.'));
+        else if (_.isEmpty(context.idAdministrator) || !validator.isInt(context.idAdministrator)) {
+            Log.Error('Bad request invalid id administrator.');
+            return reject(new Errors.BadRequest('Bad request invalid id administrator.'));
         }
         return resolve(context);
     });
 }
 
-function getUser(context) 
+function getAdministrator(context) 
 {
-    return Models.Users.getById(context.idUser).then(user => {
-        if (!user) {
-            Log.Error(`User ${context.idUser} not found.`);
-            return P.reject(Errors.NotExists.User);
+    return Models.Administrators.getById(context.idAdministrator).then(administrator => {
+        if (!administrator) {
+            Log.Error(`Administrator ${context.idAdministrator} not found.`);
+            return P.reject(Errors.NotExists.Administrator);
         }
-        context.user = user;
+        context.administrator = administrator;
         return context;
     });
 }
@@ -67,11 +67,10 @@ function update(context)
                 deleted_at : new Date()
             };
 
-            return Models.Users.update(data, context.user.id);
+            return Models.Administrators.update(data, context.administrator.id);
         })
         .then(() => {
-            Models.Companies.cacheClean();
-            Models.Users.cacheClean(context.user.id);
+            Models.Administrators.cacheClean();
             return context;
         });
 }

@@ -4,6 +4,7 @@ module.exports = {
     Health         : require('./health'),
     Config         : require('./config'),
     Auth           : require('./auth'),
+    Administrators : require('./administrators'),
     Users          : require('./users'),
     Groups         : require('./groups'),
     // Points         : require('./points'),
