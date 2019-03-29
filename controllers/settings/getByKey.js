@@ -19,7 +19,7 @@ function handle(req, res)
                 return validate(context);
             })
             .then(() => {
-                return getConfigurations(context);
+                return getSettings(context);
             })
             .then(models => {
                 res.send(models);
@@ -42,14 +42,14 @@ function validate(context)
     });
 }
 
-function getConfigurations(context) 
+function getSettings(context) 
 {
-    return Models.Configurations.getByKey(`%${context.key}%`).then(configurations => {
-        if (!configurations) {
-            Log.Error(`Configurations for key ${context.key} not found.`);
-            return P.reject(Errors.NotExists.Configurations);
+    return Models.Settings.getByKey(`%${context.key}%`).then(settings => {
+        if (!settings) {
+            Log.Error(`Settings for key ${context.key} not found.`);
+            return P.reject(Errors.NotExists.Settings);
         }
-        return configurations;
+        return settings;
     });
 }
 

@@ -11,7 +11,7 @@ const Log       = Utilities.Log;
 function handle(req, res) 
 {
     let context = _.extend({}, req.body, {
-        idConfiguration: req.params && req.params.id || null
+        idSetting: req.params && req.params.id || null
     });
 
     return Utilities.Functions.CatchError(res,
@@ -35,12 +35,12 @@ function validate(context)
 {
     return new P((resolve, reject) => {
         if (_.isEmpty(context)) {
-            Log.Error('Bad request invalid configuration information.');
-            return reject(new Errors.BadRequest('Bad request invalid configuration information.'));
+            Log.Error('Bad request invalid setting information.');
+            return reject(new Errors.BadRequest('Bad request invalid setting information.'));
         }
-        else if (!Utilities.Validator.isInt(context.idConfiguration)) {
-            Log.Error('Bad request invalid id configuration.');
-            return reject(new Errors.BadRequest('Bad request invalid id configuration.'));
+        else if (!Utilities.Validator.isInt(context.idSetting)) {
+            Log.Error('Bad request invalid id setting.');
+            return reject(new Errors.BadRequest('Bad request invalid id setting.'));
         }
         else if (_.isNil(context.value)) {
             Log.Error('Bad request invalid value.');
@@ -54,18 +54,18 @@ function verify(context)
 {
     return P.resolve()
         .then(() => {
-            return getConfiguration(context);
+            return getSetting(context);
         });
 }
 
-function getConfiguration(context) 
+function getSetting(context) 
 {
-    return Models.Configurations.getById(context.idConfiguration).then(configuration => {
-        if (!configuration) {
-            Log.Error(`Configuration ${context.idConfiguration} not found.`);
-            return P.reject(Errors.NotExists.Configuration);
+    return Models.Settings.getById(context.idSetting).then(setting => {
+        if (!setting) {
+            Log.Error(`Setting ${context.idSetting} not found.`);
+            return P.reject(Errors.NotExists.Setting);
         }
-        context.configuration = configuration;
+        context.setting = setting;
         return context;
     });
 }
@@ -77,7 +77,7 @@ function update(context)
             return save(context);
         })
         .then(() => {
-            return Models.Configurations.getById(context.configuration.id, {
+            return Models.Settings.getById(context.setting.id, {
                 useMaster: true,
                 force: true
             });
@@ -92,10 +92,10 @@ function save(context)
                 description: context.value
             };
 
-            return Models.Configurations.update(data, context.configuration.id);
+            return Models.Settings.update(data, context.setting.id);
         })
         .then(model => {
-            Models.Configurations.cacheClean();
+            Models.Settings.cacheClean();
             return model;
         });
 }

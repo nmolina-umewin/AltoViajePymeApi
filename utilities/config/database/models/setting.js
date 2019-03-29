@@ -2,8 +2,8 @@
 
 const sequelize = require('sequelize');
 
-const MODEL_NAME = 'configuration';
-const TABLE_NAME = 'configurations';
+const MODEL_NAME = 'setting';
+const TABLE_NAME = 'settings';
 
 module.exports = {
     name: MODEL_NAME,
@@ -13,7 +13,7 @@ module.exports = {
             primaryKey: true,
             autoIncrement: true
         },
-        configuration: sequelize.STRING,
+        setting_key: sequelize.STRING,
         description: sequelize.STRING
     },
     options: {

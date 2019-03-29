@@ -13,5 +13,5 @@ module.exports = {
     Companies      : require('./companies'),
     Operations     : require('./operations'),
     Permissions    : require('./permissions'),
-    Configurations : require('./configurations')
+    Settings       : require('./settings')
 };

@@ -21,10 +21,10 @@ function handle(req, res)
 
 function getPermissions() 
 {
-    return Models.AdministrationPermissions.getAll().then(models => {
+    return Models.AdministratorPermissions.getAll().then(models => {
         if (!models) {
-            Log.Error('Administration permissions not found.');
-            return P.reject(Errors.NotExists.AdministrationPermissions);
+            Log.Error('Administrator permissions not found.');
+            return P.reject(Errors.NotExists.AdministratorPermissions);
         }
         return models;
     });

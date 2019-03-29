@@ -68,8 +68,8 @@ app.get(    '/companies/:id/operations/last',         Controllers.Companies.Oper
 app.get(    '/companies/:id/operations/pending',      Controllers.Companies.Operations.Pendings);
 app.get(    '/operations/operators',                  Controllers.Operations.Operators);
 
-app.get(    '/configurations',                        Controllers.Configurations.ByKey);
-app.put(    '/configurations/:id',                    Controllers.Configurations.Update);
+app.get(    '/settings',                              Controllers.Settings.ByKey);
+app.put(    '/settings/:id',                          Controllers.Settings.Update);
 
 
 // Start Server!
