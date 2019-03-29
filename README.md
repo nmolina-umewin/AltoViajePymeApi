@@ -26,6 +26,7 @@ API para la administración el FrontEnd y Backoffice.
         - [Alta][companies_create]
         - [Modificación][companies_update]
         - [Baja][companies_delete]
+        - [Cargar AV Puntos][companies_wallets_charge]
     + [Configuraciones][settings_list]
         - [Listar por clave][settings_list]
         - [Modificación][settings_update]
@@ -796,7 +797,7 @@ Obtiene la empresa solicitada (`id_company`).
 
 ### PUT /companies/{id_company}
 
-Actualiza el administrador solicitado (`id_company`).
+Actualiza la empresa solicitada (`id_company`).
 > Nota: No es necesario enviar todos los atributos, solo los que sea desea actualizar.
 
 Request:
@@ -902,6 +903,98 @@ Response:
 Status 204 - No content
 ```
 
+### POST /companies/{id_company}/wallets
+
+Agrega puntos en la billetera de la empresa solicitada (`id_company`). Ademas, genera una trasacción de backoffice para mantener un registro de los movimientos realizados.
+
+Request:
+```javascript
+{
+    "id_administrator": 1,
+    "points": 1000
+}
+```
+
+Response:
+```javascript
+{
+    "id": 1,
+    "active": 1,
+    "created_at": "2019-03-29T03:11:21.000Z",
+    "updated_at": "2019-03-29T03:11:21.000Z",
+    "deleted_at": null,
+    "attributes": [{
+        "id": 3,
+        "value": "XN ARGENTINA  SA",
+        "field": {
+            "name": "name",
+            "type": "text"
+        }
+    }, {
+        "id": 4,
+        "value": "30710095864",
+        "field": {
+            "name": "cuit",
+            "type": "text"
+        }
+    }, {
+        "id": 5,
+        "value": "lverardo@xncompany.com",
+        "field": {
+            "name": "email",
+            "type": "email"
+        }
+    }, {
+        "id": 6,
+        "value": "MIGUELETES 1231 Piso:2 Dpto:A",
+        "field": {
+            "name": "legal_address",
+            "type": "address"
+        }
+    }, {
+        "id": 7,
+        "value": "Migueletes 1231 Piso 2 Oficina A",
+        "field": {
+            "name": "address",
+            "type": "address"
+        }
+    }, {
+        "id": 8,
+        "value": "+541148494466",
+        "field": {
+            "name": "phone",
+            "type": "phone"
+        }
+    }, {
+        "id": 9,
+        "value": "+541148494474",
+        "field": {
+            "name": "alternative_phone",
+            "type": "phone"
+        }
+    }, {
+        "id": 10,
+        "value": "https://www.xncompany.com/wp-content/uploads/2017/05/cropped-logo-cuadrado-chico-1-300x300.png",
+        "field": {
+            "name": "image",
+            "type": "image"
+        }
+    }],
+    "usersCount": 0,
+    "personsCount": 0,
+    "status": {
+        "id": 2,
+        "description": "verified"
+    },
+    "wallet": {
+        "id": 1,
+        "points": 1000,
+        "created_at": "2019-03-29T03:11:21.000Z",
+        "updated_at": "2019-03-29T03:11:21.000Z"
+    }
+}
+```
+
 ### GET /settings
 
 Obtiene la lista de las configuraciones por clave.
@@ -970,11 +1063,12 @@ Response:
 [administrators_login]: #post-administratorslogin
 [administrators_forgot]: #post-administratorsforgot
 [administrators_reset_token]: #get-administratorsresettoken
-[administrators_reset]: #post-administratorsresettoken
+[administrators_reset]: #post-administratorsreset
 [companies_list]: #get-companies
 [companies_get]: #get-companiesid_company
 [companies_create]: #post-companies
 [companies_update]: #put-companiesid_company
 [companies_delete]: #delete-companiesid_company
+[companies_wallets_charge]: #post-companiesid_companywallets
 [settings_list]: #get-settings
 [settings_update]: #put-settingsid_setting

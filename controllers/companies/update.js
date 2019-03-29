@@ -66,7 +66,7 @@ function getCompany(context)
     return Models.Companies.getById(context.idCompany).then(company => {
         if (!company) {
             Log.Error(`Company ${context.idCompany} not found.`);
-            return reject(Errors.NotExists.Company);
+            return P.reject(Errors.NotExists.Company);
         }
         context.company = company;
         return context;

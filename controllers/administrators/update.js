@@ -70,7 +70,7 @@ function getAdministrator(context)
     return Models.Administrators.getById(context.idAdministrator).then(administrator => {
         if (!administrator) {
             Log.Error(`Administrator ${context.idAdministrator} not found.`);
-            return reject(Errors.NotExists.Administrator);
+            return P.reject(Errors.NotExists.Administrator);
         }
         context.administrator = administrator;
         return context;

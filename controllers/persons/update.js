@@ -63,7 +63,7 @@ function getPerson(context)
     return Models.Persons.getById(context.idPerson).then(person => {
         if (!person) {
             Log.Error(`Person ${context.idPerson} not found.`);
-            return reject(Errors.NotExists.Person);
+            return P.reject(Errors.NotExists.Person);
         }
         context.person = person;
         return context;

@@ -66,6 +66,8 @@ app.get(    '/companies/:id/recharges/last',          Controllers.Companies.Rech
 app.get(    '/companies/:id/operations',              Controllers.Companies.Operations.All);
 app.get(    '/companies/:id/operations/last',         Controllers.Companies.Operations.Last);
 app.get(    '/companies/:id/operations/pending',      Controllers.Companies.Operations.Pendings);
+app.post(   '/companies/:id/wallets',                 Controllers.Companies.Wallets.Charge);
+
 app.get(    '/operations/operators',                  Controllers.Operations.Operators);
 
 app.get(    '/settings',                              Controllers.Settings.ByKey);

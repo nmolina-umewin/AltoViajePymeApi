@@ -10,5 +10,6 @@ module.exports = {
     Groups     : require('./groups'),
     Persons    : require('./persons'),
     Recharges  : require('./recharges'),
-    Operations : require('./operations')
+    Operations : require('./operations'),
+    Wallets    : require('./wallets')
 };

@@ -7,7 +7,7 @@ const Base   = require('./parents/model');
 
 const OMIT_OPTIONS     = Config('Database.Options.OmitOptions', ['attributes', 'where', 'order', 'group', 'limit', 'offset']);
 const DEFAULT_FIELD_ID = Config('Database.Options.DefaultFieldId', 'id');
-const MODEL_NAME = 'operationTransaction';
+const MODEL_NAME       = 'operationTransaction';
 
 class Model extends Base
 {

@@ -7,6 +7,8 @@ module.exports = {
     AdministratorTokens          : require('./administratorTokens'),
     Attributes                   : require('./attributes'),
     AttributeTypes               : require('./attributeTypes'),
+    BackofficeTransactions       : require('./backofficeTransactions'),
+    BackofficeTransactionTypes   : require('./backofficeTransactionTypes'),
     CardTypes                    : require('./cardTypes'),
     Companies                    : require('./companies'),
     CompanyWallets               : require('./companyWallets'),

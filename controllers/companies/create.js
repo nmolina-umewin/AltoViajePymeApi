@@ -185,7 +185,7 @@ function save(context)
     return P.resolve()
         .then(() => {
             let data = {
-                id_company_status : Models.CompanyStatuses.PENDING,
+                id_company_status : Models.CompanyStatuses.VERIFIED,
                 code              : uuidv4(),
                 active            : 1
             };

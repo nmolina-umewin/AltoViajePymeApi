@@ -59,7 +59,7 @@ function getUser(context)
     return Models.Users.getById(context.idUser).then(user => {
         if (!user) {
             Log.Error(`User ${context.idUser} not found.`);
-            return reject(Errors.NotExists.User);
+            return P.reject(Errors.NotExists.User);
         }
         context.user = user;
         return context;
