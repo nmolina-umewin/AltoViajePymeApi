@@ -7,7 +7,7 @@ const Base   = require('./parents/model');
 
 const OMIT_OPTIONS     = Config('Database.Options.OmitOptions', ['attributes', 'where', 'order', 'group', 'limit', 'offset']);
 const DEFAULT_FIELD_ID = Config('Database.Options.DefaultFieldId', 'id');
-const MODEL_NAME       = 'operationTransaction';
+const MODEL_NAME       = 'paymentTransaction';
 
 class Model extends Base
 {
@@ -20,7 +20,7 @@ class Model extends Base
     {
         options = options || {};
 
-        return this.query(this.queries.OperationTransactions.byCompany(idCompany, options.limit || 0), options).then(models => {
+        return this.query(this.queries.PaymentTransactions.byCompany(idCompany, options.limit || 0, options.offset || 0), options).then(models => {
             return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));
         });
     }
@@ -29,7 +29,7 @@ class Model extends Base
     {
         options = options || {};
 
-        return this.query(this.queries.OperationTransactions.byCompanyAndStatus(idCompany, idStatus, options.limit || 0), options).then(models => {
+        return this.query(this.queries.PaymentTransactions.byCompanyAndStatus(idCompany, idStatus, options.limit || 0, options.offset || 0), options).then(models => {
             return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));
         });
     }
@@ -52,7 +52,7 @@ class Model extends Base
                     }));
                 })
                 .then(model => {
-                    if (optionsPrepared.status !== this.models.OperationTransactionStatuses.APPROVED || !optionsPrepared.id_company) {
+                    if (optionsPrepared.status !== this.models.PaymentTransactionStatuses.APPROVED || !optionsPrepared.id_company) {
                         return model;
                     }
 
@@ -97,9 +97,9 @@ class Model extends Base
                 return model;
             })
             .then(() => {
-                return this.models.OperationTransactionStatuses.getById(model.id_operation_transaction_status).then(status => {
+                return this.models.PaymentTransactionStatuses.getById(model.id_payment_transaction_status).then(status => {
                     model.status = status;
-                    delete model.id_operation_transaction_status;
+                    delete model.id_payment_transaction_status;
                     return model;
                 });
             })

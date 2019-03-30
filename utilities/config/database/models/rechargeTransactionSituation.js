@@ -2,8 +2,8 @@
 
 const sequelize = require('sequelize');
 
-const MODEL_NAME = 'operationTransactionStatus';
-const TABLE_NAME = 'operation_transaction_statuses';
+const MODEL_NAME = 'rechargeTransactionSituation';
+const TABLE_NAME = 'recharge_transaction_situations';
 
 module.exports = {
     name: MODEL_NAME,

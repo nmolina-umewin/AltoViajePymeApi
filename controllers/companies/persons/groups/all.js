@@ -9,10 +9,10 @@ const Log       = Utilities.Log;
 
 function handle(req, res) 
 {
-    let context = {
+    let context = _.extend({}, Utilities.Functions.Pagination(req.query), {
         idCompany: req.params && req.params.id,
         idGroup: req.params && req.params.idGroup
-    };
+    });
 
     return Utilities.Functions.CatchError(res,
         P.bind(this)
@@ -84,6 +84,11 @@ function getPersons(context)
     let options = {
         withoutCompany: true
     };
+
+    if (context.limit) {
+        options.limit = context.limit;
+        options.offset = context.offset;
+    }
 
     return Models.Persons.getByCompanyAndGroup(context.idCompany, context.idGroup, options).then(models => {
         return models || [];

@@ -37,11 +37,11 @@ class Service extends Base
 
                 this.recharge(record).then(transaction => {
                     result.transaction = transaction;
-                    next();
+                    return P.resolve(next());
                 })
                 .catch(error => {
                     result.error = error && error.error || error;
-                    next();
+                    return P.resolve(next());
                 });
             }, error => {
                 let response = {

@@ -1,5 +1,5 @@
 "use strict";
 
 module.exports = {
-    All : require('./all')
+    List : require('./all')
 };

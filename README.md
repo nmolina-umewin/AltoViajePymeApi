@@ -10,7 +10,7 @@ API para la administración el FrontEnd y Backoffice.
     + [Local][correr_development].
     + [Producción][correr_production].
 * [Métodos][metodos].
-    + [Administradores][administrators_list]
+    + [Administradores][administrators]
         - [Listar todos][administrators_list]
         - [Obtener por ID][administrators_get]
         - [Alta][administrators_create]
@@ -20,14 +20,19 @@ API para la administración el FrontEnd y Backoffice.
         - [Recuperar contraseña][administrators_forgot]
         - [Obtener por TOKEN][administrators_reset_token]
         - [Modificación de contraseña][administrators_reset]
-    + [Empresas][companies_list]
+    + [Empresas][companies]
         - [Listar todas][companies_list]
         - [Obtener por ID][companies_get]
         - [Alta][companies_create]
         - [Modificación][companies_update]
         - [Baja][companies_delete]
         - [Cargar AV Puntos][companies_wallets_charge]
-    + [Configuraciones][settings_list]
+    + [Transacciones][transactions]
+        - [Recargas][transactions_recharges]
+            + [Listar todas las recargas][transactions_recharges_list]
+            + [Obtener recarga por ID][transactions_recharges_get]
+            + [Cambiar estado/situación de una recarga][transactions_recharges_update]
+    + [Configuraciones][settings]
         - [Listar por clave][settings_list]
         - [Modificación][settings_update]
 
@@ -83,6 +88,8 @@ $ node start
  GET    /settings
  PUT    /settings/{id_setting}
 ```
+
+#### Administración
 
 ### GET /administrators
 
@@ -526,6 +533,8 @@ Obtiene la lista de los permisos de administradores.
     { ... }
 ]
 ```
+
+#### Empresas
 
 ### GET /companies
 
@@ -995,6 +1004,49 @@ Response:
 }
 ```
 
+#### Transacciones
+
+##### Transacciones de recargas
+
+### GET /transactions/recharges
+
+Obtiene la lista de las transacciones de racargas.
+
+```javascript
+
+```
+
+### GET /transactions/recharges/{id_recharge}
+
+Obtiene la transacción de racarga solicitada (`id_recharge`).
+
+```javascript
+
+```
+
+### PUT /transactions/recharges/{id_recharge}
+
+Actualiza la transacción de recarga solicitada (`id_recharge`).
+
+Request:
+```javascript
+{
+    "id_administrator": 1,
+
+    // 1 = NEED_PAID,
+    // 2 = IN_PROGRESS,
+    // 3 = PAID_OUT
+    "id_recharge_transaction_situation": 2
+}
+```
+
+Response:
+```javascript
+
+```
+
+#### Configuraciones
+
 ### GET /settings
 
 Obtiene la lista de las configuraciones por clave.
@@ -1055,6 +1107,7 @@ Response:
 [correr_development]: #modo-local
 [correr_production]: #modo-producción
 [metodos]: #métodos
+[administrators]: #administración
 [administrators_list]: #get-administrators
 [administrators_get]: #get-administratorsid_administrator
 [administrators_create]: #post-administrators
@@ -1064,11 +1117,18 @@ Response:
 [administrators_forgot]: #post-administratorsforgot
 [administrators_reset_token]: #get-administratorsresettoken
 [administrators_reset]: #post-administratorsreset
+[companies]: #empresas
 [companies_list]: #get-companies
 [companies_get]: #get-companiesid_company
 [companies_create]: #post-companies
 [companies_update]: #put-companiesid_company
 [companies_delete]: #delete-companiesid_company
 [companies_wallets_charge]: #post-companiesid_companywallets
+[transactions]: #transacciones
+[transactions_recharges]: #transacciones-de-recargas
+[transactions_recharges_list]: #get-companies
+[transactions_recharges_get]: #get-companiesid_company
+[transactions_recharges_update]: #put-companiesid_company
+[settings]: #configuraciones
 [settings_list]: #get-settings
 [settings_update]: #put-settingsid_setting

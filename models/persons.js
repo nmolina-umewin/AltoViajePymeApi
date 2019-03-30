@@ -19,7 +19,9 @@ class Model extends Base
 
     getAll(options)
     {
-        return this.query(this.queries.Persons.all(), options).then(models => {
+        options = options || {};
+
+        return this.query(this.queries.Persons.all(options.limit || 0, options.offset || 0), options).then(models => {
             return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));
         });
     }
@@ -39,14 +41,18 @@ class Model extends Base
 
     getByCompany(idCompany, options)
     {
-        return this.query(this.queries.Persons.byCompany(idCompany), options).then(models => {
+        options = options || {};
+
+        return this.query(this.queries.Persons.byCompany(idCompany, options.limit || 0, options.offset || 0), options).then(models => {
             return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));
         });
     }
 
     getByCompanyAndGroup(idCompany, idGroup, options)
     {
-        return this.query(this.queries.Persons.byCompanyAndGroup(idCompany, idGroup), options).then(models => {
+        options = options || {};
+
+        return this.query(this.queries.Persons.byCompanyAndGroup(idCompany, idGroup, options.limit || 0, options.offset || 0), options).then(models => {
             return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));
         });
     }

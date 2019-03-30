@@ -13,7 +13,7 @@ function handle(res, promise)
             res.status(error.code || DEFAULT_ERROR_STATUS).send(error.toJson());
         })
         .catch(error => {
-            Log.Error(`${DEFAULT_ERROR_MESSAGE}. ${error} ${process.env.LOG_ERROR_STACK ? error.stack || '' : ''}`);
+            Log.Error(`${DEFAULT_ERROR_MESSAGE}. ${error} ${process.env.LOG_ERROR_STACK ? error && error.stack || '' : ''}`);
             res.status(DEFAULT_ERROR_STATUS).send(Errors.Internal.toJson());
         });
 }

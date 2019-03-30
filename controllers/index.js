@@ -7,11 +7,11 @@ module.exports = {
     Administrators : require('./administrators'),
     Users          : require('./users'),
     Groups         : require('./groups'),
-    // Points         : require('./points'),
     Persons        : require('./persons'),
     Recharges      : require('./recharges'),
     Companies      : require('./companies'),
-    Operations     : require('./operations'),
+    Payments       : require('./payments'),
     Permissions    : require('./permissions'),
+    Transactions   : require('./transactions'),
     Settings       : require('./settings')
 };

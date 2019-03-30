@@ -19,14 +19,18 @@ class Model extends Base
 
     getAll(options)
     {
-        return this.query(this.queries.Groups.all(), options).then(models => {
+        options = options || {};
+
+        return this.query(this.queries.Groups.all(options.limit || 0, options.offset || 0), options).then(models => {
             return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));
         });
     }
 
     getByCompany(idCompany, options)
     {
-        return this.query(this.queries.Groups.byCompany(idCompany), options).then(models => {
+        options = options || {};
+
+        return this.query(this.queries.Groups.byCompany(idCompany, options.limit || 0, options.offset || 0), options).then(models => {
             return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));
         });
     }

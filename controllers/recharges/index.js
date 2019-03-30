@@ -1,6 +1,5 @@
 "use strict";
 
 module.exports = {
-    ById           : require('./getById'),
-    Recharge       : require('./recharge')
+    Recharge : require('./recharge')
 };

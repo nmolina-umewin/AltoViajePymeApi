@@ -10,11 +10,11 @@ module.exports = {
     apps : [{
         name: APP_NAME,
         script: APP_MAIN,
-        cwd: `/root/altoviaje/${APP_NAME}`,
+        cwd: `/home/altoviaje/src/${APP_NAME}`,
         instances: os.cpus().length,
         exec_mode: 'cluster',
-        out_file: `/root/altoviaje/logs/${APP_NAME}.log`,
-        error_file: `/root/altoviaje/logs/${APP_NAME}.error.log`,
+        out_file: `/home/altoviaje/logs/${APP_NAME}.log`,
+        error_file: `/home/altoviaje/logs/${APP_NAME}.error.log`,
         env: {
             NODE_ENV: 'development',
             LOG_ERROR_STACK: 1,

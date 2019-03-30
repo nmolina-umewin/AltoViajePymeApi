@@ -21,7 +21,7 @@ class Model extends Base
     {
         options = options || {};
 
-        return this.query(this.queries.RechargeTransactions.byCompany(idCompany, options.limit || 0), options).then(models => {
+        return this.query(this.queries.RechargeTransactions.byCompany(idCompany, options.limit || 0, options.offset || 0), options).then(models => {
             return this.mapping(models, DEFAULT_FIELD_ID, _.omit(options, OMIT_OPTIONS));
         });
     }
@@ -106,6 +106,13 @@ class Model extends Base
                 return this.models.RechargeTransactionStatuses.getById(model.id_recharge_transaction_status).then(status => {
                     model.status = status;
                     delete model.id_recharge_transaction_status;
+                    return model;
+                });
+            })
+            .then(() => {
+                return this.models.RechargeTransactionSituations.getById(model.id_recharge_transaction_situation).then(situation => {
+                    model.situation = situation;
+                    delete model.id_recharge_transaction_situation;
                     return model;
                 });
             })

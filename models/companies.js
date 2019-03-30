@@ -65,6 +65,8 @@ class Model extends Base
 
     populate(model, options)
     {
+        options = options || {};
+
         return P.bind(this)
             .then(() => {
                 return super.populate(model);

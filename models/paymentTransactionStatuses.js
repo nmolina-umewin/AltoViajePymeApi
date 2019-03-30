@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const Base = require('./parents/model');
 
-const MODEL_NAME = 'operationTransactionStatus';
+const MODEL_NAME = 'paymentTransactionStatus';
 
 const STATUSES = {
     PENDING  : 1,

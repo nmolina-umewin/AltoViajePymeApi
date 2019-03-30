@@ -2,5 +2,6 @@
 
 module.exports = {
     List   : require('./all'),
-    Groups : require('./groups')
+    ById   : require('./getById'),
+    Update : require('./update')
 };

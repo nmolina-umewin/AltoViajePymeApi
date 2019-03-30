@@ -2,8 +2,8 @@
 
 const sequelize = require('sequelize');
 
-const MODEL_NAME = 'operationTransaction';
-const TABLE_NAME = 'operation_transactions';
+const MODEL_NAME = 'paymentTransaction';
+const TABLE_NAME = 'payment_transactions';
 
 module.exports = {
     name: MODEL_NAME,
@@ -16,7 +16,7 @@ module.exports = {
         id_company: sequelize.INTEGER(10).UNSIGNED,
         id_user: sequelize.BIGINT(20).UNSIGNED,
         id_operator: sequelize.INTEGER(10).UNSIGNED,
-        id_operation_transaction_status: sequelize.INTEGER(10).UNSIGNED,
+        id_payment_transaction_status: sequelize.INTEGER(10).UNSIGNED,
         amount: {
             type: sequelize.DECIMAL(16, 4),
             defaultValue: 0

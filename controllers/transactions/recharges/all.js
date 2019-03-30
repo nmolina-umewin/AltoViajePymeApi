@@ -2,19 +2,19 @@
 
 const _         = require('lodash');
 const P         = require('bluebird');
-const Models    = require('../../models');
-const Utilities = require('../../utilities');
+const Models    = require('../../../models');
+const Utilities = require('../../../utilities');
 
 function handle(req, res) 
 {
     let context = _.extend({}, Utilities.Functions.Pagination(req.query), {
-        idCompany: req.params && req.params.id
+        withoutCompany : req.query && req.query.c ? false : true
     });
 
     return Utilities.Functions.CatchError(res,
         P.bind(this)
             .then(() => {
-                return getCompanies(context);
+                return getRecharges(context);
             })
             .then(models => {
                 res.send(models);
@@ -22,17 +22,20 @@ function handle(req, res)
     );
 }
 
-function getCompanies(context) 
+function getRecharges(context) 
 {
-    let options = {};
+    let options = {
+        withoutCompany: context.withoutCompany,
+        withoutDetails: true
+    };
 
     if (context.limit) {
         options.limit = context.limit;
         options.offset = context.offset;
     }
 
-    return Models.Companies.getAll().then(models => {
-        return models || [];
+    return Models.RechargeTransactions.getAll(options).then(transactions => {
+        return transactions || [];
     });
 }
 

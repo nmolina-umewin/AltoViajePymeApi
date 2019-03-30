@@ -10,7 +10,7 @@ module.exports = {
     Persons               : require('./persons'),
     PersonGroups          : require('./personGroups'),
     Permissions           : require('./permissions'),
-    OperationTransactions : require('./operationTransactions'),
+    PaymentTransactions   : require('./paymentTransactions'),
     RechargeTransactions  : require('./rechargeTransactions'),
     Settings              : require('./settings'),
     Users                 : require('./users'),
