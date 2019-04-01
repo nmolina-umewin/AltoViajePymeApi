@@ -127,7 +127,8 @@ function update(context)
             return save(context);
         })
         .then(() => {
-            return Models.PaymentTransactions.getById(context.transaction.id, {
+            return Models.PaymentTransactions.getById(context.transaction.id, {,
+                withoutDetails: true,
                 useMaster: true,
                 force: true
             });

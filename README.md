@@ -1037,7 +1037,8 @@ Obtiene la lista de las transacciones de pagos.
             "created_at": "2019-04-01T17:19:10.000Z",
             "updated_at": null
         },
-        "user": { ... }
+        "user": { ... },
+        "company": { ... }
     },
     { ... }
 ]
@@ -1067,7 +1068,8 @@ Obtiene la transacción de pago solicitada (`id_payment`).
         "created_at": "2019-04-01T17:19:10.000Z",
         "updated_at": null
     },,
-    "user": { ... }
+    "user": { ... },
+    "company": { ... }
 }
 ```
 
@@ -1109,7 +1111,8 @@ Response:
         "created_at": "2019-04-01T17:19:10.000Z",
         "updated_at": null
     },
-    "user": { ... }
+    "user": { ... },
+    "company": { ... }
 }
 ```
 
@@ -1141,8 +1144,10 @@ Obtiene la lista de las transacciones de racargas.
             "id": 1,
             "description": "need_paid"
         },
-        "user": { ... }
-    }
+        "user": { ... },
+        "company": { ... }
+    },
+    { ... }
 ]
 ```
 
@@ -1171,7 +1176,8 @@ Obtiene la transacción de recarga solicitada (`id_recharge`).
         "id": 1,
         "description": "need_paid"
     },
-    "user": { ... }
+    "user": { ... },
+    "company": { ... }
 }
 ```
 
@@ -1213,7 +1219,8 @@ Response:
         "id": 3,
         "description": "paid_out"
     },
-    "user": { ... }
+    "user": { ... },
+    "company": { ... }
 }
 ```
 

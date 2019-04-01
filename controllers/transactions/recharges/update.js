@@ -128,6 +128,7 @@ function update(context)
         })
         .then(() => {
             return Models.RechargeTransactions.getById(context.transaction.id, {
+                withoutDetails: true,
                 useMaster: true,
                 force: true
             });
