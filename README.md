@@ -10,7 +10,7 @@ API para la administración el FrontEnd y Backoffice.
     + [Local][correr_development].
     + [Producción][correr_production].
 * [Métodos][metodos].
-    + [Backoffice][bakcoffice]
+    + [Backoffice][backoffice]
         - [Dashboard][backoffice_dashboard]
     + [Administradores][administrators]
         - [Listar todos][administrators_list]
@@ -119,9 +119,9 @@ $ node start
  PUT    /settings/{id_setting}
 ```
 
-#### Backoffice
+### Backoffice
 
-### GET /backoffice/dashboard
+#### GET /backoffice/dashboard
 
 Obtiene datos necesarios para armar el dashboard del backoffice.
 
@@ -140,9 +140,19 @@ Obtiene datos necesarios para armar el dashboard del backoffice.
 }
 ```
 
-#### Administración
+### Administración
 
-### GET /administrators
+* [Listar todos][administrators_list]
+* [Obtener por ID][administrators_get]
+* [Alta][administrators_create]
+* [Modificación][administrators_update]
+* [Baja][administrators_delete]
+* [Login][administrators_login]
+* [Recuperar contraseña][administrators_forgot]
+* [Obtener por TOKEN][administrators_reset_token]
+* [Modificación de contraseña][administrators_reset]
+
+#### GET /administrators
 
 Obtiene la lista de los administradores.
 
@@ -198,7 +208,7 @@ Response sin paginación
 ]
 ```
 
-### POST /administrators
+#### POST /administrators
 
 Crea un nuevo administrador.
 > Nota: `code` esta pensado para realizar acciones que requieren confirmación. Por ejemplo: borrar cuenta.
@@ -259,7 +269,7 @@ Response:
 }
 ```
 
-### GET /administrators/{id_administrator}
+#### GET /administrators/{id_administrator}
 
 Obtiene el administrador solicitado (`id_administrator`).
 
@@ -303,7 +313,7 @@ Obtiene el administrador solicitado (`id_administrator`).
 }
 ```
 
-### PUT /administrators/{id_administrator}
+#### PUT /administrators/{id_administrator}
 
 Actualiza el administrador solicitado (`id_administrator`).
 > Nota: No es necesario enviar todos los atributos, solo los que sea desea actualizar.
@@ -361,7 +371,7 @@ Response:
 }
 ```
 
-### DELETE /administrators/{id_administrator}
+#### DELETE /administrators/{id_administrator}
 
 Elimina de forma lógica el administrador solicitado (`id_administrator`).
 > Nota: Solo se actualizara la fecha de borrado del administrador.
@@ -371,7 +381,7 @@ Response:
 Status 204 - No content
 ```
 
-### POST /administrators/login
+#### POST /administrators/login
 
 Logea un administrador.
 
@@ -424,7 +434,7 @@ Response:
 }
 ```
 
-### POST /administrators/forgot
+#### POST /administrators/forgot
 
 Devuelve un administrador con un nuevo `token` para poder realizar el reseteo de la contraseña.
 
@@ -477,7 +487,7 @@ Response:
 }
 ```
 
-### GET /administrators/reset/{token}
+#### GET /administrators/reset/{token}
 
 Devuelve el administrador correspondiente al `token`, solo si el mismo no caduco.
 
@@ -521,7 +531,7 @@ Devuelve el administrador correspondiente al `token`, solo si el mismo no caduco
 }
 ```
 
-### POST /administrators/reset
+#### POST /administrators/reset
 
 Actualiza la contraseña del administrador (`id_administrator`).
 
@@ -574,7 +584,7 @@ Response:
 }
 ```
 
-### GET /administrators/permissions
+#### GET /administrators/permissions
 
 Obtiene la lista de los permisos de administradores.
 
@@ -594,9 +604,16 @@ Obtiene la lista de los permisos de administradores.
 ]
 ```
 
-#### Empresas
+### Empresas
 
-### GET /companies
+* [Listar todas][companies_list]
+* [Obtener por ID][companies_get]
+* [Alta][companies_create]
+* [Modificación][companies_update]
+* [Baja][companies_delete]
+* [Cargar AV Puntos][companies_wallets_charge]
+
+#### GET /companies
 
 Obtiene la lista de las empresas.
 
@@ -691,7 +708,7 @@ Response sin paginación
 ]
 ```
 
-### POST /companies
+#### POST /companies
 
 Crea una nueva empresa.
 > Nota: `code` esta pensado para realizar acciones que requieren confirmación. Por ejemplo: borrar cuenta.
@@ -789,7 +806,7 @@ Response:
 }
 ```
 
-### GET /companies/{id_company}
+#### GET /companies/{id_company}
 
 Obtiene la empresa solicitada (`id_company`).
 
@@ -873,7 +890,7 @@ Obtiene la empresa solicitada (`id_company`).
 }
 ```
 
-### PUT /companies/{id_company}
+#### PUT /companies/{id_company}
 
 Actualiza la empresa solicitada (`id_company`).
 > Nota: No es necesario enviar todos los atributos, solo los que sea desea actualizar.
@@ -971,7 +988,7 @@ Response:
 }
 ```
 
-### DELETE /companies/{id_company}
+#### DELETE /companies/{id_company}
 
 Elimina de forma lógica al empresa solicitada (`id_company`).
 > Nota: Solo se actualizara la fecha de borrado de la empresa.
@@ -981,7 +998,7 @@ Response:
 Status 204 - No content
 ```
 
-### POST /companies/{id_company}/wallets
+#### POST /companies/{id_company}/wallets
 
 Agrega puntos en la billetera de la empresa solicitada (`id_company`). Ademas, genera una trasacción de backoffice para mantener un registro de los movimientos realizados.
 
@@ -1073,11 +1090,18 @@ Response:
 }
 ```
 
-#### Transacciones
+### Transacciones
 
-##### Transacciones de pagos
+* [Pagos (Rapipago, Bitex y/o Transferencia bancaria)][transactions_payments]
+* [Recargas de SUBE][transactions_recharges]
 
-### GET /transactions/payments
+#### Transacciones de pagos
+
+* [Listar todas las operaciones][transactions_payments_list]
+* [Obtener operación por ID][transactions_payments_get]
+* [Cambiar estado/situación de una operación][transactions_payments_update]
+
+#### GET /transactions/payments
 
 Obtiene la lista de las transacciones de pagos.
 
@@ -1123,7 +1147,7 @@ Response sin filtros y sin paginación
 ]
 ```
 
-### GET /transactions/payments/{id_payment}
+#### GET /transactions/payments/{id_payment}
 
 Obtiene la transacción de pago solicitada (`id_payment`).
 
@@ -1151,7 +1175,7 @@ Obtiene la transacción de pago solicitada (`id_payment`).
 }
 ```
 
-### PUT /transactions/payments/{id_payment}
+#### PUT /transactions/payments/{id_payment}
 
 Actualiza el estado de la transacción de pago solicitada (`id_payment`).
 
@@ -1193,9 +1217,13 @@ Response:
 }
 ```
 
-##### Transacciones de recargas
+#### Transacciones de recargas
 
-### GET /transactions/recharges
+* [Listar todas las recargas][transactions_recharges_list]
+* [Obtener recarga por ID][transactions_recharges_get]
+* [Cambiar estado/situación de una recarga][transactions_recharges_update]
+
+#### GET /transactions/recharges
 
 Obtiene la lista de las transacciones de racargas.
 
@@ -1240,7 +1268,7 @@ Response sin filtros y sin paginación
 ]
 ```
 
-### GET /transactions/recharges/{id_recharge}
+#### GET /transactions/recharges/{id_recharge}
 
 Obtiene la transacción de recarga solicitada (`id_recharge`).
 
@@ -1269,7 +1297,7 @@ Obtiene la transacción de recarga solicitada (`id_recharge`).
 }
 ```
 
-### PUT /transactions/recharges/{id_recharge}
+#### PUT /transactions/recharges/{id_recharge}
 
 Actualiza la situación de la transacción de recarga solicitada (`id_recharge`).
 
@@ -1311,9 +1339,14 @@ Response:
 }
 ```
 
-#### Ordenes de pago
+### Ordenes de pago
 
-### GET /recharges/payments/orders
+* [Listar todas las ordenes][recharge_payment_orders_list]
+* [Obtener order por ID][recharge_payment_orders_get]
+* [Alta][recharge_payment_orders_create]
+* [Cambiar estado/situación de una order][recharge_payment_orders_update]
+
+#### GET /recharges/payments/orders
 
 ```javascript
 [
@@ -1336,7 +1369,7 @@ Response:
 ]
 ```
 
-### POST /recharges/payments/orders
+#### POST /recharges/payments/orders
 
 Request
 ```javascript
@@ -1366,7 +1399,7 @@ Response
 }
 ```
 
-### GET /recharges/payments/orders/{id_order}
+#### GET /recharges/payments/orders/{id_order}
 
 ```javascript
 {
@@ -1387,7 +1420,7 @@ Response
 }
 ```
 
-### PUT /recharges/payments/orders/{id_order}
+#### PUT /recharges/payments/orders/{id_order}
 
 Request
 ```javascript
@@ -1421,9 +1454,12 @@ Response
 }
 ```
 
-#### Configuraciones
+### Configuraciones
 
-### GET /settings
+* [Listar por clave][settings_list]
+* [Modificación][settings_update]
+
+#### GET /settings
 
 Obtiene la lista de las configuraciones por clave.
 > Nota: Se utiliza `description` en lugar de `value`, ya que `value` es una palabra reservada de MySql.
@@ -1466,7 +1502,7 @@ Response con filtro de clave
 ]
 ```
 
-### PUT /settings/{id_setting}
+#### PUT /settings/{id_setting}
 
 Actualiza la configuración solicitada (`id_setting`).
 > Nota: Se utiliza `description` en lugar de `value`, ya que `value` es una palabra reservada de MySql.
