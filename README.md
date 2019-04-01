@@ -28,6 +28,10 @@ API para la administración el FrontEnd y Backoffice.
         - [Baja][companies_delete]
         - [Cargar AV Puntos][companies_wallets_charge]
     + [Transacciones][transactions]
+        - [Payments][transactions_payments]
+            + [Listar todas las operaciones][transactions_payments_list]
+            + [Obtener operación por ID][transactions_payments_get]
+            + [Cambiar estado/situación de una operación][transactions_payments_update]
         - [Recargas][transactions_recharges]
             + [Listar todas las recargas][transactions_recharges_list]
             + [Obtener recarga por ID][transactions_recharges_get]
@@ -1006,6 +1010,109 @@ Response:
 
 #### Transacciones
 
+##### Transacciones de pagos
+
+### GET /transactions/payments
+
+Obtiene la lista de las transacciones de pagos.
+
+```javascript
+[
+    {
+        "id": 1,
+        "id_company": 1,
+        "amount": 1000,
+        "description": "{\"cbu\":\"2850590940090418135201\",\"alias\":\"Alto Viaje\",\"email\":\"points@altoviaje.com\"}",
+        "created_at": "2019-04-01T17:19:35.000Z",
+        "updated_at": null,
+        "status": {
+            "id": 1,
+            "description": "pending"
+        },
+        "operator": {
+            "id": 3,
+            "description": "wire_transfer",
+            "active": 1,
+            "priority": 2,
+            "created_at": "2019-04-01T17:19:10.000Z",
+            "updated_at": null
+        },
+        "user": { ... }
+    },
+    { ... }
+]
+```
+
+### GET /transactions/payments/{id_payment}
+
+Obtiene la transacción de pago solicitada (`id_payment`).
+
+```javascript
+{
+    "id": 1,
+    "id_company": 1,
+    "amount": 1000,
+    "description": "{\"cbu\":\"2850590940090418135201\",\"alias\":\"Alto Viaje\",\"email\":\"points@altoviaje.com\"}",
+    "created_at": "2019-04-01T17:19:35.000Z",
+    "updated_at": null,
+    "status": {
+        "id": 1,
+        "description": "pending"
+    },
+    "operator": {
+        "id": 3,
+        "description": "wire_transfer",
+        "active": 1,
+        "priority": 2,
+        "created_at": "2019-04-01T17:19:10.000Z",
+        "updated_at": null
+    },,
+    "user": { ... }
+}
+```
+
+### PUT /transactions/payments/{id_payment}
+
+Actualiza el estado de la transacción de pago solicitada (`id_payment`).
+
+Request:
+```javascript
+{
+    "id_administrator": 1,
+
+    // 1 = PENDING,
+    // 2 = REJECTED,
+    // 3 = APPROVED,
+    // 4 = EXPIRED
+    "id_recharge_transaction_status": 3
+}
+```
+
+Response:
+```javascript
+{
+    "id": 1,
+    "id_company": 1,
+    "amount": 1000,
+    "description": "{\"cbu\":\"2850590940090418135201\",\"alias\":\"Alto Viaje\",\"email\":\"points@altoviaje.com\",\"changes\":[{\"id_payment_transaction_status_from\":1,\"id_payment_transaction_status_to\":3,\"id_administrator\":1,\"updated_at\":\"2019-04-01T17:40:10.465Z\"}]}",
+    "created_at": "2019-04-01T17:19:35.000Z",
+    "updated_at": null,
+    "status": {
+        "id": 3,
+        "description": "approved"
+    },
+    "operator": {
+        "id": 3,
+        "description": "wire_transfer",
+        "active": 1,
+        "priority": 2,
+        "created_at": "2019-04-01T17:19:10.000Z",
+        "updated_at": null
+    },
+    "user": { ... }
+}
+```
+
 ##### Transacciones de recargas
 
 ### GET /transactions/recharges
@@ -1013,20 +1120,64 @@ Response:
 Obtiene la lista de las transacciones de racargas.
 
 ```javascript
-
+[
+    {
+        "id": 1,
+        "id_company": 1,
+        "description": "{\"persons\":[{\"id_person\":4,\"id_transaction\":370144,\"id_transaction_internal\":8,\"id_transaction_external\":37010,\"number\":\"6061267340141116\",\"amount\":550,\"status\":\"ok\",\"created_at\":\"2019-03-17T23:32:28.000Z\",\"recharge\":true,\"reverse\":false,\"id_recharge_transaction_status\":2},{\"id_person\":3,\"id_transaction\":0,\"id_transaction_internal\":10,\"id_transaction_external\":37012,\"number\":\"7584003387152044\",\"amount\":550,\"status\":\"invalid_card\",\"created_at\":\"2019-03-17T23:34:08.000Z\",\"recharge\":false,\"reverse\":false,\"id_recharge_transaction_status\":3},{\"id_person\":2,\"id_transaction\":0,\"id_transaction_internal\":11,\"id_transaction_external\":37013,\"number\":\"6061267187152044\",\"amount\":550,\"status\":\"card_in_black_list\",\"created_at\":\"2019-03-17T23:34:40.000Z\",\"recharge\":false,\"reverse\":false,\"id_recharge_transaction_status\":3},{\"id_person\":1,\"id_transaction\":370145,\"id_transaction_internal\":9,\"id_transaction_external\":37011,\"number\":\"6061267195495203\",\"amount\":550,\"status\":\"ok\",\"created_at\":\"2019-03-17T23:33:10.000Z\",\"recharge\":true,\"reverse\":false,\"id_recharge_transaction_status\":2}],\"results\":{\"incomplete\":0,\"done\":2,\"fail\":2}}",
+        "points": 1100,
+        "created_at": "2019-03-29T21:22:41.000Z",
+        "persons": [
+            { ... },
+            { ... },
+            { ... },
+            { ... }
+        ],
+        "status": {
+            "id": 1,
+            "description": "incomplete"
+        },
+        "situation": {
+            "id": 1,
+            "description": "need_paid"
+        },
+        "user": { ... }
+    }
+]
 ```
 
 ### GET /transactions/recharges/{id_recharge}
 
-Obtiene la transacción de racarga solicitada (`id_recharge`).
+Obtiene la transacción de recarga solicitada (`id_recharge`).
 
 ```javascript
-
+{
+    "id": 1,
+    "id_company": 1,
+    "description": "{\"persons\":[{\"id_person\":4,\"id_transaction\":370144,\"id_transaction_internal\":8,\"id_transaction_external\":37010,\"number\":\"6061267340141116\",\"amount\":550,\"status\":\"ok\",\"created_at\":\"2019-03-17T23:32:28.000Z\",\"recharge\":true,\"reverse\":false,\"id_recharge_transaction_status\":2},{\"id_person\":3,\"id_transaction\":0,\"id_transaction_internal\":10,\"id_transaction_external\":37012,\"number\":\"7584003387152044\",\"amount\":550,\"status\":\"invalid_card\",\"created_at\":\"2019-03-17T23:34:08.000Z\",\"recharge\":false,\"reverse\":false,\"id_recharge_transaction_status\":3},{\"id_person\":2,\"id_transaction\":0,\"id_transaction_internal\":11,\"id_transaction_external\":37013,\"number\":\"6061267187152044\",\"amount\":550,\"status\":\"card_in_black_list\",\"created_at\":\"2019-03-17T23:34:40.000Z\",\"recharge\":false,\"reverse\":false,\"id_recharge_transaction_status\":3},{\"id_person\":1,\"id_transaction\":370145,\"id_transaction_internal\":9,\"id_transaction_external\":37011,\"number\":\"6061267195495203\",\"amount\":550,\"status\":\"ok\",\"created_at\":\"2019-03-17T23:33:10.000Z\",\"recharge\":true,\"reverse\":false,\"id_recharge_transaction_status\":2}],\"results\":{\"incomplete\":0,\"done\":2,\"fail\":2}}",
+    "points": 1100,
+    "created_at": "2019-03-29T21:22:41.000Z",
+    "persons": [
+        { ... },
+        { ... },
+        { ... },
+        { ... }
+    ],
+    "status": {
+        "id": 1,
+        "description": "incomplete"
+    },
+    "situation": {
+        "id": 1,
+        "description": "need_paid"
+    },
+    "user": { ... }
+}
 ```
 
 ### PUT /transactions/recharges/{id_recharge}
 
-Actualiza la transacción de recarga solicitada (`id_recharge`).
+Actualiza la situación de la transacción de recarga solicitada (`id_recharge`).
 
 Request:
 ```javascript
@@ -1042,7 +1193,28 @@ Request:
 
 Response:
 ```javascript
-
+{
+    "id": 1,
+    "id_company": 1,
+    "description": "{\"persons\":[{\"id_person\":4,\"id_transaction\":370144,\"id_transaction_internal\":8,\"id_transaction_external\":37010,\"number\":\"6061267340141116\",\"amount\":550,\"status\":\"ok\",\"created_at\":\"2019-03-17T23:32:28.000Z\",\"recharge\":true,\"reverse\":false,\"id_recharge_transaction_status\":2},{\"id_person\":3,\"id_transaction\":0,\"id_transaction_internal\":10,\"id_transaction_external\":37012,\"number\":\"7584003387152044\",\"amount\":550,\"status\":\"invalid_card\",\"created_at\":\"2019-03-17T23:34:08.000Z\",\"recharge\":false,\"reverse\":false,\"id_recharge_transaction_status\":3},{\"id_person\":2,\"id_transaction\":0,\"id_transaction_internal\":11,\"id_transaction_external\":37013,\"number\":\"6061267187152044\",\"amount\":550,\"status\":\"card_in_black_list\",\"created_at\":\"2019-03-17T23:34:40.000Z\",\"recharge\":false,\"reverse\":false,\"id_recharge_transaction_status\":3},{\"id_person\":1,\"id_transaction\":370145,\"id_transaction_internal\":9,\"id_transaction_external\":37011,\"number\":\"6061267195495203\",\"amount\":550,\"status\":\"ok\",\"created_at\":\"2019-03-17T23:33:10.000Z\",\"recharge\":true,\"reverse\":false,\"id_recharge_transaction_status\":2}],\"results\":{\"incomplete\":0,\"done\":2,\"fail\":2},\"changes\":[{\"id_recharge_transaction_situation_from\":1,\"id_recharge_transaction_situation_to\":3,\"id_administrator\":1,\"updated_at\":\"2019-04-01T17:40:10.465Z\"}]}",
+    "points": 1100,
+    "created_at": "2019-03-29T21:22:41.000Z",
+    "persons": [
+        { ... },
+        { ... },
+        { ... },
+        { ... }
+    ],
+    "status": {
+        "id": 1,
+        "description": "incomplete"
+    },
+    "situation": {
+        "id": 3,
+        "description": "paid_out"
+    },
+    "user": { ... }
+}
 ```
 
 #### Configuraciones
@@ -1125,10 +1297,14 @@ Response:
 [companies_delete]: #delete-companiesid_company
 [companies_wallets_charge]: #post-companiesid_companywallets
 [transactions]: #transacciones
+[transactions_payments]: #transacciones-de-pagos
+[transactions_payments_list]: #get-transactions-payments
+[transactions_payments_get]: #get-transactions-paymentsid_payment
+[transactions_payments_update]: #put-transactions-paymentsid_payment
 [transactions_recharges]: #transacciones-de-recargas
-[transactions_recharges_list]: #get-companies
-[transactions_recharges_get]: #get-companiesid_company
-[transactions_recharges_update]: #put-companiesid_company
+[transactions_recharges_list]: #get-transactions-recharges
+[transactions_recharges_get]: #get-transactions-rechargesid_recharge
+[transactions_recharges_update]: #put-transactions-rechargesid_recharge
 [settings]: #configuraciones
 [settings_list]: #get-settings
 [settings_update]: #put-settingsid_setting
