@@ -48,7 +48,7 @@ function validate(context)
             Log.Error('Bad request invalid id administrator.');
             return reject(new Errors.BadRequest('Bad request invalid id administrator.'));
         }
-        else if (!context.points) {
+        else if (!context.points || !_.isNumber(context.points)) {
             Log.Error('Bad request invalid points.');
             return reject(new Errors.BadRequest('Bad request invalid points.'));
         }
