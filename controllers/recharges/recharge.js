@@ -12,9 +12,19 @@ const processRecharges  = require('./functions/process');
 const Errors            = Utilities.Errors;
 const Log               = Utilities.Log;
 
+const EVENT_CONTEXT_PROPERTIES     = ['idCompany', 'idUser', 'payload'];
+const EVENT_TRANSACTION_PROCESSING = 30051;
+const EVENT_TRANSACTION_SUCCESS    = 30052;
+const EVENT_TRANSACTION_ERROR      = 30053;
+
 function handle(req, res) 
 {
-    let context = _.extend({}, req.body);
+    let body = req.body || {};
+    let context = _.extend({}, req.context || {}, {
+        idCompany: body.idCompany || body.id_company || null,
+        idUser: body.idUser || body.id_user || null,
+        payload: body.payload || {}
+    });
 
     return Utilities.Functions.CatchError(res,
         P.bind(this)
@@ -25,28 +35,38 @@ function handle(req, res)
                 return populateRecharges(context);
             })
             .then(() => {
-                return recharge(context);
+                // Emit event recharge sube in progress
+                return context.eventer.emit(EVENT_TRANSACTION_PROCESSING, _.pick(context, EVENT_CONTEXT_PROPERTIES))
+                    .catch(Log.Error)
+                    .then(() => {
+                        // Process recharge
+                        return recharge(context);
+                    });
             })
             .then(model => {
                 // Emit event recharge sube success
-                if (context.eventer) {
-                    context.eventer.emit(30001, _.extend({}, req.body, {
-                        id_recharge_transaction: model.id,
-                        id_recharge_transaction_status: model.status.id,
-                        status: model.status.description,
-                        description: model.description
-                    }));
-                }
-                res.send(model);
+                return context.eventer.emit(EVENT_TRANSACTION_SUCCESS, _.extend(_.pick(context, EVENT_CONTEXT_PROPERTIES), {
+                    id_recharge_transaction: model.id,
+                    id_recharge_transaction_status: model.status.id,
+                    status: model.status.description,
+                    description: model.description
+                }))
+                .catch(Log.Error)
+                .then(() => {
+                    // Send response to client
+                    return res.send(model);
+                });
             })
             .catch(error => {
                 // Emit event recharge sube error
-                if (context.eventer) {
-                    context.eventer.emit(30002, _.extend({}, req.body, {
-                        error: `${error}`
-                    }));
-                }
-                throw error;
+                return context.eventer.emit(EVENT_TRANSACTION_ERROR, _.extend(_.pick(context, EVENT_CONTEXT_PROPERTIES), {
+                    error: `${error}`
+                }))
+                .catch(Log.Error)
+                .then(() => {
+                    // Handle error
+                    throw error;
+                });
             })
     );
 }

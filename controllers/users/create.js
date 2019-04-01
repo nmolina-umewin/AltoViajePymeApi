@@ -9,9 +9,18 @@ const uuidv4    = require('uuid/v4');
 const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
+const EVENT_CONTEXT_PROPERTIES = ['idCompany', 'name', 'email', 'rol'];
+const EVENT_TRANSACTION        = 30011;
+
 function handle(req, res) 
 {
-    let context = _.extend({}, req.body);
+    let body = req.body || {};
+    let context = _.extend({}, req.context || {}, {
+        idCompany: body.idCompany || body.id_company || null,
+        name: body.name,
+        email: body.email,
+        rol: body.rol
+    });
 
     return Utilities.Functions.CatchError(res,
         P.bind(this)
@@ -25,7 +34,17 @@ function handle(req, res)
                 return create(context);
             })
             .then(model => {
-                res.send(model);
+                // Emit event user new success
+                return context.eventer.emit(EVENT_TRANSACTION, _.extend(_.pick(context, EVENT_CONTEXT_PROPERTIES), {
+                    id_user: model.id,
+                    code: model.code,
+                    token: model.token
+                }))
+                .catch(Log.Error)
+                .then(() => {
+                    // Send response to client
+                    return res.send(model);
+                });
             })
     );
 }

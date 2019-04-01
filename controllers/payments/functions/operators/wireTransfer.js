@@ -7,13 +7,13 @@ const Utilities = require('../../../../utilities');
 const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
-const CONFIGURATION_OPERATOR_WIDE_TRANSFER = 'operators.wire_transfer.';
+const SETTING_OPERATOR_WIDE_TRANSFER = 'operators.wire_transfer.';
 
 function processWideTransfer(context) 
 {
     return P.resolve()
         .then(() => {
-            return getConfigurations(context);
+            return getSettings(context);
         })
         .then(() => {
             return validate(context);
@@ -23,18 +23,18 @@ function processWideTransfer(context)
         });
 }
 
-function getConfigurations(context) 
+function getSettings(context) 
 {
-    return Models.Configurations.getByKey(`%${CONFIGURATION_OPERATOR_WIDE_TRANSFER}%`).then(configurations => {
-        if (!configurations || !configurations.length) {
-            Log.Error(`Configurations for key ${CONFIGURATION_OPERATOR_WIDE_TRANSFER} not found.`);
-            return P.reject(Errors.NotExists.Configurations);
+    return Models.Settings.getByKey(`%${SETTING_OPERATOR_WIDE_TRANSFER}%`).then(settings => {
+        if (!settings || !settings.length) {
+            Log.Error(`Settings for key ${SETTING_OPERATOR_WIDE_TRANSFER} not found.`);
+            return P.reject(Errors.NotExists.Settings);
         }
 
         context.data = {};
 
-        _.each(configurations, configuration => {
-            context.data[configuration.configuration.replace(CONFIGURATION_OPERATOR_WIDE_TRANSFER, '')] = configuration.description;
+        _.each(settings, setting => {
+            context.data[setting.setting_key.replace(SETTING_OPERATOR_WIDE_TRANSFER, '')] = setting.description;
         });
         return context;
     });
@@ -63,12 +63,12 @@ function process(context)
                 id_company: context.company.id,
                 id_user: context.user.id,
                 id_operator: context.operator.id,
-                id_operation_transaction_status: Models.OperationTransactionStatuses.PENDING,
+                id_payment_transaction_status: Models.PaymentTransactionStatuses.PENDING,
                 description: JSON.stringify(context.data),
                 amount: context.payload.amount
             };
 
-            return Models.OperationTransactions.create(data);
+            return Models.PaymentTransactions.create(data);
         });
 }
 

@@ -8,9 +8,12 @@ const validator = require('validator');
 const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
+const EVENT_CONTEXT_PROPERTIES = ['idCompany', 'idUser', 'name', 'email', 'rol'];
+const EVENT_TRANSACTION        = 30012;
+
 function handle(req, res) 
 {
-    let context = _.extend({}, req.body, {
+    let context = _.extend({}, req.context || {}, {
         idUser: req.params && req.params.id || null
     });
 
@@ -26,7 +29,13 @@ function handle(req, res)
                 return update(context);
             })
             .then(model => {
-                res.send(model);
+                // Emit event user update success
+                return context.eventer.emit(EVENT_TRANSACTION, _.extend(_.pick(context, EVENT_CONTEXT_PROPERTIES)))
+                .catch(Log.Error)
+                .then(() => {
+                    // Send response to client
+                    return res.send(model);
+                });
             })
     );
 }
@@ -46,7 +55,7 @@ function validate(context)
             Log.Error('Bad request invalid email.');
             return reject(new Errors.BadRequest('Bad request invalid email.'));
         }
-        else if (!Utilities.Validator.isInt(context.rol)) {
+        else if (context.rol && !Utilities.Validator.isInt(context.rol)) {
             Log.Error('Bad request invalid rol.');
             return reject(new Errors.BadRequest('Bad request invalid rol.'));
         }

@@ -7,11 +7,14 @@ const Utilities = require('../../utilities');
 const Errors    = Utilities.Errors;
 const Log       = Utilities.Log;
 
+const EVENT_CONTEXT_PROPERTIES = ['idUser'];
+const EVENT_TRANSACTION        = 30013;
+
 function handle(req, res) 
 {
-    let context = {
+    let context = _.extend({}, req.context || {}, {
         idUser: req.params && req.params.id || null
-    };
+    });
 
     return Utilities.Functions.CatchError(res,
         P.bind(this)
@@ -25,7 +28,13 @@ function handle(req, res)
                 return update(context);
             })
             .then(() => {
-                res.status(Utilities.Http.Status.NO_CONTENT).send();
+                // Emit event user update success
+                return context.eventer.emit(EVENT_TRANSACTION, _.extend(_.pick(context, EVENT_CONTEXT_PROPERTIES)))
+                .catch(Log.Error)
+                .then(() => {
+                    // Send response to client
+                    return res.status(Utilities.Http.Status.NO_CONTENT).send();
+                });
             })
     );
 }

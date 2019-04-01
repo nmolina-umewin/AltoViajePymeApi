@@ -10,9 +10,6 @@ function populateRechargeTransaction(context)
 {
     return P.resolve()
         .then(() => {
-            return getEventer(context);
-        })
-        .then(() => {
             return getCompany(context);
         })
         .then(() => {
@@ -21,12 +18,6 @@ function populateRechargeTransaction(context)
         .then(() => {
             return getPersons(context);
         });
-}
-
-function getEventer(context) 
-{
-    context.eventer = new Utilities.Eventer();
-    return context;
 }
 
 function getCompany(context) 

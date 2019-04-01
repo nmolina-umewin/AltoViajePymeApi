@@ -4,8 +4,8 @@ const _ = require('lodash');
 const Models = require('../../../../models');
 
 const OPERATORS_NAMES = {
-    [Models.Operators.RAPIPAGO]      : 'rapipago',
-    [Models.Operators.BITEX]         : 'bitex',
+    [Models.Operators.RAPIPAGO]      : 'remote',
+    [Models.Operators.BITEX]         : 'remote',
     [Models.Operators.WIRE_TRANSFER] : 'wireTransfer'
 };
 

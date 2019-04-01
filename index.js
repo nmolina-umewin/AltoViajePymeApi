@@ -47,7 +47,7 @@ app.get(    '/persons/:id',                                Controllers.Persons.B
 app.delete( '/persons/:id',                                Middlewares.Eventer, Controllers.Persons.Delete);
 app.post(   '/persons/delete/batch',                       Middlewares.Eventer, Controllers.Persons.DeleteBatch);
 
-// app.post(   '/payments',                                   Middlewares.Eventer, Controllers.Payments.Payment);
+app.post(   '/payments',                                   Middlewares.Eventer, Controllers.Payments.Payment);
 app.get(    '/payments/operators',                         Controllers.Payments.Operators);
 
 app.post(   '/recharges',                                  Middlewares.Eventer, Controllers.Recharges.Recharge);
