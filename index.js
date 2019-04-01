@@ -76,7 +76,7 @@ app.get(    '/companies/:id/transactions/payments',        Controllers.Companies
 app.get(    '/companies/:id/transactions/recharges',       Controllers.Companies.Transactions.Recharges.List);
 app.post(   '/companies/:id/wallets',                      Controllers.Companies.Wallets.Charge);
 
-app.get(    '/settings',                                   Controllers.Settings.ByKey);
+app.get(    '/settings',                                   Controllers.Settings.List);
 app.put(    '/settings/:id',                               Controllers.Settings.Update);
 
 app.get(    '/backoffice/dashboard',                       Controllers.Backoffice.Dashboard);

@@ -1,6 +1,6 @@
 "use strict";
 
 module.exports = {
-    ByKey  : require('./getByKey'),
+    List   : require('./all'),
     Update : require('./update')
 };

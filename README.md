@@ -1316,31 +1316,109 @@ Response:
 ### GET /recharges/payments/orders
 
 ```javascript
-
+[
+    {
+        "id": 1,
+        "amount": 2700,
+        "description": "{\"changes\":[{\"id_administrator\":1,\"created_at\":\"2019-04-01T20:12:21.981Z\"}]}",
+        "created_at": "2019-04-01T20:12:21.000Z",
+        "status": {
+            "id": 1,
+            "description": "pending"
+        },
+        "transactions": [
+            { ... },
+            { ... },
+            { ... },
+            { ... }
+        ]
+    }
+]
 ```
 
 ### POST /recharges/payments/orders
 
 Request
 ```javascript
-
+{
+    "id_administrator": 1,
+    "ids": [1, 2, 3, 4]
+}
 ```
 
 Response
 ```javascript
-
+{
+    "id": 1,
+    "amount": 2700,
+    "description": "{\"changes\":[{\"id_administrator\":1,\"created_at\":\"2019-04-01T20:12:21.981Z\"}]}",
+    "created_at": "2019-04-01T20:12:21.000Z",
+    "status": {
+        "id": 1,
+        "description": "pending"
+    },
+    "transactions": [
+        { ... },
+        { ... },
+        { ... },
+        { ... }
+    ]
+}
 ```
 
 ### GET /recharges/payments/orders/{id_order}
 
 ```javascript
-
+{
+    "id": 1,
+    "amount": 2700,
+    "description": "{\"changes\":[{\"id_administrator\":1,\"created_at\":\"2019-04-01T20:12:21.981Z\"}]}",
+    "created_at": "2019-04-01T20:12:21.000Z",
+    "status": {
+        "id": 1,
+        "description": "pending"
+    },
+    "transactions": [
+        { ... },
+        { ... },
+        { ... },
+        { ... }
+    ]
+}
 ```
 
 ### PUT /recharges/payments/orders/{id_order}
 
+Request
 ```javascript
+{
+    "id_administrator": 1,
 
+    // 1 = PENDING,
+    // 2 = PAID_OUT,
+    // 3 = CANCELED
+    "id_recharge_payment_order_status": 2
+}
+```
+
+Response
+```javascript
+{
+    "id": 1,
+    "amount": 2700,
+    "description": "{\"changes\":[{\"id_administrator\":1,\"created_at\":\"2019-04-01T20:12:21.981Z\"},{\"id_recharge_payment_order_status_from\":1,\"id_recharge_payment_order_status_to\":2,\"id_administrator\":1,\"updated_at\":\"2019-04-01T20:30:43.362Z\"}]}",
+    "created_at": "2019-04-01T20:12:21.000Z",
+    "status": {
+        "id": 2,
+        "description": "paid_out"
+    },
+    "transactions": [
+        { ... },
+        { ... },
+        { ... },
+        { ... }
+    ]
+}
 ```
 
 #### Configuraciones
@@ -1350,6 +1428,16 @@ Response
 Obtiene la lista de las configuraciones por clave.
 > Nota: Se utiliza `description` en lugar de `value`, ya que `value` es una palabra reservada de MySql.
 
+Request
+```sh
+GET /settings
+
+# FILTROS
+# Por clave
+GET /settings?k=recharge
+```
+
+Response con filtro de clave
 ```javascript
 // #########################################
 // GET /settings?k=recharge
