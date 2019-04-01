@@ -10,6 +10,8 @@ API para la administración el FrontEnd y Backoffice.
     + [Local][correr_development].
     + [Producción][correr_production].
 * [Métodos][metodos].
+    + [Backoffice][bakcoffice]
+        - [Dashboard][backoffice_dashboard]
     + [Administradores][administrators]
         - [Listar todos][administrators_list]
         - [Obtener por ID][administrators_get]
@@ -69,6 +71,9 @@ $ node start
  GET    /config # Configuración del micro servicio (SOLO VISIBLE EN LOCAL/DESARROLLO)
  GET    /health # Para verificar si el servicio esta corriendo y si esta conectado con la base de datos.
 
+ # Backoficce
+ GET    /backoffice/dashboard
+
  # Administrators
  GET    /administrators
  POST   /administrators
@@ -88,9 +93,40 @@ $ node start
  PUT    /companies/{id_company}
  DELETE /companies/{id_company}
 
+ # Transactions
+ ## Payments
+ GET    /transactions/payments
+ GET    /transactions/payments/{id_payment}
+ PUT    /transactions/payments/{id_payment}
+ ## Recharges
+ GET    /transactions/recharges
+ GET    /transactions/recharges/{id_recharge}
+ PUT    /transactions/recharges/{id_recharge}
+
  # Settings
  GET    /settings
  PUT    /settings/{id_setting}
+```
+
+#### Backoffice
+
+### GET /backoffice/dashboard
+
+Obtiene datos necesarios para armar el dashboard del backoffice.
+
+```javascript
+{
+    "companies":{
+        "availablePoints": 8400
+    },
+    "recharges":{
+        "pendingPayments": 1600
+    },
+    "limits":{
+        "guarantee": 120000
+    },
+    "balance": 118400
+}
 ```
 
 #### Administración
@@ -1020,7 +1056,6 @@ Obtiene la lista de las transacciones de pagos.
 [
     {
         "id": 1,
-        "id_company": 1,
         "amount": 1000,
         "description": "{\"cbu\":\"2850590940090418135201\",\"alias\":\"Alto Viaje\",\"email\":\"points@altoviaje.com\"}",
         "created_at": "2019-04-01T17:19:35.000Z",
@@ -1051,7 +1086,6 @@ Obtiene la transacción de pago solicitada (`id_payment`).
 ```javascript
 {
     "id": 1,
-    "id_company": 1,
     "amount": 1000,
     "description": "{\"cbu\":\"2850590940090418135201\",\"alias\":\"Alto Viaje\",\"email\":\"points@altoviaje.com\"}",
     "created_at": "2019-04-01T17:19:35.000Z",
@@ -1094,7 +1128,6 @@ Response:
 ```javascript
 {
     "id": 1,
-    "id_company": 1,
     "amount": 1000,
     "description": "{\"cbu\":\"2850590940090418135201\",\"alias\":\"Alto Viaje\",\"email\":\"points@altoviaje.com\",\"changes\":[{\"id_payment_transaction_status_from\":1,\"id_payment_transaction_status_to\":3,\"id_administrator\":1,\"updated_at\":\"2019-04-01T17:40:10.465Z\"}]}",
     "created_at": "2019-04-01T17:19:35.000Z",
@@ -1126,7 +1159,6 @@ Obtiene la lista de las transacciones de racargas.
 [
     {
         "id": 1,
-        "id_company": 1,
         "description": "{\"persons\":[{\"id_person\":4,\"id_transaction\":370144,\"id_transaction_internal\":8,\"id_transaction_external\":37010,\"number\":\"6061267340141116\",\"amount\":550,\"status\":\"ok\",\"created_at\":\"2019-03-17T23:32:28.000Z\",\"recharge\":true,\"reverse\":false,\"id_recharge_transaction_status\":2},{\"id_person\":3,\"id_transaction\":0,\"id_transaction_internal\":10,\"id_transaction_external\":37012,\"number\":\"7584003387152044\",\"amount\":550,\"status\":\"invalid_card\",\"created_at\":\"2019-03-17T23:34:08.000Z\",\"recharge\":false,\"reverse\":false,\"id_recharge_transaction_status\":3},{\"id_person\":2,\"id_transaction\":0,\"id_transaction_internal\":11,\"id_transaction_external\":37013,\"number\":\"6061267187152044\",\"amount\":550,\"status\":\"card_in_black_list\",\"created_at\":\"2019-03-17T23:34:40.000Z\",\"recharge\":false,\"reverse\":false,\"id_recharge_transaction_status\":3},{\"id_person\":1,\"id_transaction\":370145,\"id_transaction_internal\":9,\"id_transaction_external\":37011,\"number\":\"6061267195495203\",\"amount\":550,\"status\":\"ok\",\"created_at\":\"2019-03-17T23:33:10.000Z\",\"recharge\":true,\"reverse\":false,\"id_recharge_transaction_status\":2}],\"results\":{\"incomplete\":0,\"done\":2,\"fail\":2}}",
         "points": 1100,
         "created_at": "2019-03-29T21:22:41.000Z",
@@ -1158,7 +1190,6 @@ Obtiene la transacción de recarga solicitada (`id_recharge`).
 ```javascript
 {
     "id": 1,
-    "id_company": 1,
     "description": "{\"persons\":[{\"id_person\":4,\"id_transaction\":370144,\"id_transaction_internal\":8,\"id_transaction_external\":37010,\"number\":\"6061267340141116\",\"amount\":550,\"status\":\"ok\",\"created_at\":\"2019-03-17T23:32:28.000Z\",\"recharge\":true,\"reverse\":false,\"id_recharge_transaction_status\":2},{\"id_person\":3,\"id_transaction\":0,\"id_transaction_internal\":10,\"id_transaction_external\":37012,\"number\":\"7584003387152044\",\"amount\":550,\"status\":\"invalid_card\",\"created_at\":\"2019-03-17T23:34:08.000Z\",\"recharge\":false,\"reverse\":false,\"id_recharge_transaction_status\":3},{\"id_person\":2,\"id_transaction\":0,\"id_transaction_internal\":11,\"id_transaction_external\":37013,\"number\":\"6061267187152044\",\"amount\":550,\"status\":\"card_in_black_list\",\"created_at\":\"2019-03-17T23:34:40.000Z\",\"recharge\":false,\"reverse\":false,\"id_recharge_transaction_status\":3},{\"id_person\":1,\"id_transaction\":370145,\"id_transaction_internal\":9,\"id_transaction_external\":37011,\"number\":\"6061267195495203\",\"amount\":550,\"status\":\"ok\",\"created_at\":\"2019-03-17T23:33:10.000Z\",\"recharge\":true,\"reverse\":false,\"id_recharge_transaction_status\":2}],\"results\":{\"incomplete\":0,\"done\":2,\"fail\":2}}",
     "points": 1100,
     "created_at": "2019-03-29T21:22:41.000Z",
@@ -1201,7 +1232,6 @@ Response:
 ```javascript
 {
     "id": 1,
-    "id_company": 1,
     "description": "{\"persons\":[{\"id_person\":4,\"id_transaction\":370144,\"id_transaction_internal\":8,\"id_transaction_external\":37010,\"number\":\"6061267340141116\",\"amount\":550,\"status\":\"ok\",\"created_at\":\"2019-03-17T23:32:28.000Z\",\"recharge\":true,\"reverse\":false,\"id_recharge_transaction_status\":2},{\"id_person\":3,\"id_transaction\":0,\"id_transaction_internal\":10,\"id_transaction_external\":37012,\"number\":\"7584003387152044\",\"amount\":550,\"status\":\"invalid_card\",\"created_at\":\"2019-03-17T23:34:08.000Z\",\"recharge\":false,\"reverse\":false,\"id_recharge_transaction_status\":3},{\"id_person\":2,\"id_transaction\":0,\"id_transaction_internal\":11,\"id_transaction_external\":37013,\"number\":\"6061267187152044\",\"amount\":550,\"status\":\"card_in_black_list\",\"created_at\":\"2019-03-17T23:34:40.000Z\",\"recharge\":false,\"reverse\":false,\"id_recharge_transaction_status\":3},{\"id_person\":1,\"id_transaction\":370145,\"id_transaction_internal\":9,\"id_transaction_external\":37011,\"number\":\"6061267195495203\",\"amount\":550,\"status\":\"ok\",\"created_at\":\"2019-03-17T23:33:10.000Z\",\"recharge\":true,\"reverse\":false,\"id_recharge_transaction_status\":2}],\"results\":{\"incomplete\":0,\"done\":2,\"fail\":2},\"changes\":[{\"id_recharge_transaction_situation_from\":1,\"id_recharge_transaction_situation_to\":3,\"id_administrator\":1,\"updated_at\":\"2019-04-01T17:40:10.465Z\"}]}",
     "points": 1100,
     "created_at": "2019-03-29T21:22:41.000Z",

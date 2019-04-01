@@ -17,6 +17,16 @@ class Model extends Base
         super(MODEL_NAME);
     }
 
+    getAllPendingPayments(idUser, options)
+    {
+        return this.queryOne(this.queries.RechargeTransactions.allPendingPayments(), options).then(totals => {
+            if (!totals || !totals.total) {
+                return P.resolve(0);
+            }
+            return totals.total;
+        });
+    }
+
     getByCompany(idCompany, options)
     {
         options = options || {};

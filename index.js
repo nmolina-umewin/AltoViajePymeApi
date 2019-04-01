@@ -74,6 +74,8 @@ app.get(    '/companies/:id/transactions/recharges',       Controllers.Companies
 app.get(    '/settings',                                   Controllers.Settings.ByKey);
 app.put(    '/settings/:id',                               Controllers.Settings.Update);
 
+app.get(    '/backoffice/dashboard',                       Controllers.Backoffice.Dashboard);
+
 
 // Start Server!
 // =========================

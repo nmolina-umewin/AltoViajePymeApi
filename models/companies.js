@@ -12,6 +12,16 @@ class Model extends Base
         super(MODEL_NAME);
     }
 
+    getAllAvailablePoints(idUser, options)
+    {
+        return this.queryOne(this.queries.Companies.allAvailablePoints(), options).then(totals => {
+            if (!totals || !totals.total) {
+                return P.resolve(0);
+            }
+            return totals.total;
+        });
+    }
+
     getByUser(idUser, options)
     {
         return this.queryOne(this.queries.Companies.byUser(idUser), options).then(model => {

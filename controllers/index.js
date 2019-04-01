@@ -5,6 +5,7 @@ module.exports = {
     Config         : require('./config'),
     Auth           : require('./auth'),
     Administrators : require('./administrators'),
+    Backoffice     : require('./backoffice'),
     Users          : require('./users'),
     Groups         : require('./groups'),
     Persons        : require('./persons'),
