@@ -1316,6 +1316,8 @@ Response:
 [correr_development]: #modo-local
 [correr_production]: #modo-producción
 [metodos]: #métodos
+[backoffice]: #backoffice
+[backoffice_dashboard]: #get-backofficedashboard
 [administrators]: #administración
 [administrators_list]: #get-administrators
 [administrators_get]: #get-administratorsid_administrator
