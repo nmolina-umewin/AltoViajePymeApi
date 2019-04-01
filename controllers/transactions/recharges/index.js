@@ -3,5 +3,5 @@
 module.exports = {
     List   : require('./all'),
     ById   : require('./getById'),
-    Update : require('./update')
+    Status : require('./status')
 };

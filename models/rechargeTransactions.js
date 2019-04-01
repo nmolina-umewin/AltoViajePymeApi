@@ -2,7 +2,6 @@
 
 const _      = require('lodash');
 const P      = require('bluebird');
-const async  = require('async');
 const Config = require('../utilities/config');
 const Base   = require('./parents/model');
 

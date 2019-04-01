@@ -10,8 +10,7 @@ const Log       = Utilities.Log;
 function handle(req, res) 
 {
     let context = {
-        idPaymentTransaction : req.params && req.params.id,
-        withoutCompany       : req.query && req.query.c ? false : true
+        idRechargePaymentOrder: req.params && req.params.id
     };
 
     return Utilities.Functions.CatchError(res,
@@ -20,7 +19,7 @@ function handle(req, res)
                 return validate(context);
             })
             .then(() => {
-                return getPayment(context);
+                return getOrder(context);
             })
             .then(model => {
                 res.send(model);
@@ -31,27 +30,26 @@ function handle(req, res)
 function validate(context)
 {
     return new P((resolve, reject) => {
-        if (!Utilities.Validator.isInt(context.idPaymentTransaction)) {
-            Log.Error('Bad request invalid id payment transaction.');
-            return reject(new Errors.BadRequest('Bad request invalid id payment transaction.'));
+        if (!Utilities.Validator.isInt(context.idRechargePaymentOrder)) {
+            Log.Error('Bad request invalid id recharge payment order.');
+            return reject(new Errors.BadRequest('Bad request invalid id recharge payment order.'));
         }
         return resolve(context);
     });
 }
 
-function getPayment(context) 
+function getOrder(context) 
 {
     let options = {
-        withoutCompany: context.withoutCompany,
         withoutDetails: true
     };
 
-    return Models.PaymentTransactions.getById(Number(context.idPaymentTransaction), options).then(transaction => {
-        if (!transaction) {
-            Log.Error(`Payment transaction ${context.idPaymentTransaction} not found.`);
-            return P.reject(Errors.NotExists.PaymentTransaction);
+    return Models.RechargePaymentOrders.getById(context.idRechargePaymentOrder, options).then(order => {
+        if (!order) {
+            Log.Error(`Recharge payment order ${context.idRechargePaymentOrder} not found.`);
+            return P.reject(Errors.NotExists.RechargePaymentOrder);
         }
-        return transaction;
+        return order;
     });
 }
 

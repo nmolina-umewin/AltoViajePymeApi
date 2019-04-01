@@ -51,13 +51,17 @@ app.post(   '/payments',                                   Middlewares.Eventer, 
 app.get(    '/payments/operators',                         Controllers.Payments.Operators);
 
 app.post(   '/recharges',                                  Middlewares.Eventer, Controllers.Recharges.Recharge);
+app.post(   '/recharges/payments/orders',                  Controllers.Recharges.Payments.Create);
+app.get(    '/recharges/payments/orders',                  Controllers.Recharges.Payments.List);
+app.get(    '/recharges/payments/orders/:id',              Controllers.Recharges.Payments.ById);
+app.put(    '/recharges/payments/orders/:id',              Controllers.Recharges.Payments.Status);
 
 app.get(    '/transactions/payments',                      Controllers.Transactions.Payments.List);
 app.get(    '/transactions/payments/:id',                  Controllers.Transactions.Payments.ById);
-app.put(    '/transactions/payments/:id',                  Controllers.Transactions.Payments.Update);
+app.put(    '/transactions/payments/:id',                  Controllers.Transactions.Payments.Status);
 app.get(    '/transactions/recharges',                     Controllers.Transactions.Recharges.List);
 app.get(    '/transactions/recharges/:id',                 Controllers.Transactions.Recharges.ById);
-app.put(    '/transactions/recharges/:id',                 Controllers.Transactions.Recharges.Update);
+app.put(    '/transactions/recharges/:id',                 Controllers.Transactions.Recharges.Status);
 
 app.get(    '/companies',                                  Controllers.Companies.List);
 app.post(   '/companies',                                  Controllers.Companies.Create);
@@ -70,6 +74,7 @@ app.get(    '/companies/:id/persons',                      Controllers.Companies
 app.get(    '/companies/:id/persons/groups/:idGroup',      Controllers.Companies.Persons.Groups.List);
 app.get(    '/companies/:id/transactions/payments',        Controllers.Companies.Transactions.Payments.List);
 app.get(    '/companies/:id/transactions/recharges',       Controllers.Companies.Transactions.Recharges.List);
+app.post(   '/companies/:id/wallets',                      Controllers.Companies.Wallets.Charge);
 
 app.get(    '/settings',                                   Controllers.Settings.ByKey);
 app.put(    '/settings/:id',                               Controllers.Settings.Update);

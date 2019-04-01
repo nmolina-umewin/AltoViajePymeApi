@@ -30,14 +30,19 @@ API para la administración el FrontEnd y Backoffice.
         - [Baja][companies_delete]
         - [Cargar AV Puntos][companies_wallets_charge]
     + [Transacciones][transactions]
-        - [Payments][transactions_payments]
+        - [Pagos (Rapipago, Bitex y/o Transferencia bancaria)][transactions_payments]
             + [Listar todas las operaciones][transactions_payments_list]
             + [Obtener operación por ID][transactions_payments_get]
             + [Cambiar estado/situación de una operación][transactions_payments_update]
-        - [Recargas][transactions_recharges]
+        - [Recargas de SUBE][transactions_recharges]
             + [Listar todas las recargas][transactions_recharges_list]
             + [Obtener recarga por ID][transactions_recharges_get]
             + [Cambiar estado/situación de una recarga][transactions_recharges_update]
+    + [Ordenes de pago][recharge_payment_orders]
+        - [Listar todas las ordenes][recharge_payment_orders_list]
+        - [Obtener order por ID][recharge_payment_orders_get]
+        - [Alta][recharge_payment_orders_create]
+        - [Cambiar estado/situación de una order][recharge_payment_orders_update]
     + [Configuraciones][settings]
         - [Listar por clave][settings_list]
         - [Modificación][settings_update]
@@ -103,6 +108,12 @@ $ node start
  GET    /transactions/recharges/{id_recharge}
  PUT    /transactions/recharges/{id_recharge}
 
+ # Payments orders
+ GET    /recharges/payments/orders
+ POST   /recharges/payments/orders
+ GET    /recharges/payments/orders/{id_order}
+ PUT    /recharges/payments/orders/{id_order}
+
  # Settings
  GET    /settings
  PUT    /settings/{id_setting}
@@ -135,6 +146,15 @@ Obtiene datos necesarios para armar el dashboard del backoffice.
 
 Obtiene la lista de los administradores.
 
+Request
+```sh
+GET /administrators
+
+# PAGINACIÓN (Necesita si o si `page` y `pageSize` para realizar la paginación)
+GET /administrators?page=1&pageSize=10
+```
+
+Response sin paginación
 ```javascript
 [
     {
@@ -580,6 +600,15 @@ Obtiene la lista de los permisos de administradores.
 
 Obtiene la lista de las empresas.
 
+Request
+```sh
+GET /companies
+
+# PAGINACIÓN (Necesita si o si `page` y `pageSize` para realizar la paginación)
+GET /companies?page=1&pageSize=10
+```
+
+Response sin paginación
 ```javascript
 [
     {
@@ -1052,6 +1081,21 @@ Response:
 
 Obtiene la lista de las transacciones de pagos.
 
+Request
+```sh
+GET /transactions/payments
+
+# FILTROS
+# Por operador (1 = rapipago, 2 = bitex, 3 = transferencia bancaria)
+GET /transactions/payments?o=3
+# Con empresa. Indica que el json de respuesta debe contener el objeto empresa
+GET /transactions/payments?c=true
+
+# PAGINACIÓN (Necesita si o si `page` y `pageSize` para realizar la paginación)
+GET /transactions/payments?page=1&pageSize=10
+```
+
+Response sin filtros y sin paginación
 ```javascript
 [
     {
@@ -1155,6 +1199,19 @@ Response:
 
 Obtiene la lista de las transacciones de racargas.
 
+Request
+```sh
+GET /transactions/recharges
+
+# FILTROS
+# Con empresa. Indica que el json de respuesta debe contener el objeto empresa
+GET /transactions/recharges?c=true
+
+# PAGINACIÓN (Necesita si o si `page` y `pageSize` para realizar la paginación)
+GET /transactions/recharges?page=1&pageSize=10
+```
+
+Response sin filtros y sin paginación
 ```javascript
 [
     {
@@ -1254,6 +1311,38 @@ Response:
 }
 ```
 
+#### Ordenes de pago
+
+### GET /recharges/payments/orders
+
+```javascript
+
+```
+
+### POST /recharges/payments/orders
+
+Request
+```javascript
+
+```
+
+Response
+```javascript
+
+```
+
+### GET /recharges/payments/orders/{id_order}
+
+```javascript
+
+```
+
+### PUT /recharges/payments/orders/{id_order}
+
+```javascript
+
+```
+
 #### Configuraciones
 
 ### GET /settings
@@ -1344,6 +1433,11 @@ Response:
 [transactions_recharges_list]: #get-transactionsrecharges
 [transactions_recharges_get]: #get-transactionsrechargesid_recharge
 [transactions_recharges_update]: #put-transactionsrechargesid_recharge
+[recharge_payment_orders]: #ordenes-de-pago
+[recharge_payment_orders_list]: #get-rechargespaymentsorders
+[recharge_payment_orders_create]: #post-rechargespaymentsorders
+[recharge_payment_orders_get]: #get-rechargespaymentsordersid_order
+[recharge_payment_orders_update]: #put-rechargespaymentsordersid_order
 [settings]: #configuraciones
 [settings_list]: #get-settings
 [settings_update]: #put-settingsid_setting

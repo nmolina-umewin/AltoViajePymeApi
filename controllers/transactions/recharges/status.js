@@ -12,9 +12,9 @@ function handle(req, res)
 {
     let body = req.body || {};
     let context = _.extend({}, req.context || {}, {
-        idPaymentTransaction: req.params && req.params.id || null,
-        idPaymentTransactionStatus: body.idPaymentTransactionStatus || body.id_payment_transaction_status || null,
-        idAdministrator: body.idAdministrator || body.id_administrator || null
+        idRechargeTransaction          : req.params && req.params.id || null,
+        idRechargeTransactionSituation : body.idRechargeTransactionSituation || body.id_recharge_transaction_situation || null,
+        idAdministrator                : body.idAdministrator || body.id_administrator || null
     });
 
     return Utilities.Functions.CatchError(res,
@@ -38,16 +38,16 @@ function validate(context)
 {
     return new P((resolve, reject) => {
         if (_.isEmpty(context)) {
-            Log.Error('Bad request invalid payment transaction information.');
-            return reject(new Errors.BadRequest('Bad request invalid payment transaction information.'));
+            Log.Error('Bad request invalid recharge transaction information.');
+            return reject(new Errors.BadRequest('Bad request invalid recharge transaction information.'));
         }
-        else if (!Utilities.Validator.isInt(context.idPaymentTransaction)) {
-            Log.Error('Bad request invalid id payment transaction.');
-            return reject(new Errors.BadRequest('Bad request invalid id payment transaction.'));
+        else if (!Utilities.Validator.isInt(context.idRechargeTransaction)) {
+            Log.Error('Bad request invalid id recharge transaction.');
+            return reject(new Errors.BadRequest('Bad request invalid id recharge transaction.'));
         }
-        else if (!Utilities.Validator.isInt(context.idPaymentTransactionStatus)) {
-            Log.Error('Bad request invalid id payment transaction status.');
-            return reject(new Errors.BadRequest('Bad request invalid id payment transaction status.'));
+        else if (!Utilities.Validator.isInt(context.idRechargeTransactionSituation)) {
+            Log.Error('Bad request invalid id recharge transaction situation.');
+            return reject(new Errors.BadRequest('Bad request invalid id recharge transaction situation.'));
         }
         else if (!Utilities.Validator.isInt(context.idAdministrator)) {
             Log.Error('Bad request invalid id administrator.');
@@ -64,7 +64,7 @@ function verify(context)
             return getTransaction(context);
         })
         .then(() => {
-            return getPaymentTransactionStatus(context);
+            return getRechargeTransactionSituation(context);
         })
         .then(() => {
             return getAdministrator(context);
@@ -73,33 +73,33 @@ function verify(context)
 
 function getTransaction(context) 
 {
-    return Models.PaymentTransactions.getById(context.idPaymentTransaction).then(transaction => {
+    return Models.RechargeTransactions.getById(context.idRechargeTransaction).then(transaction => {
         if (!transaction) {
-            Log.Error(`Payment transaction ${context.idPaymentTransaction} not found.`);
-            return P.reject(Errors.NotExists.PaymentTransaction);
+            Log.Error(`Recharge transaction ${context.idRechargeTransaction} not found.`);
+            return P.reject(Errors.NotExists.RechargeTransaction);
         }
         context.transaction = transaction;
         return context;
     });
 }
 
-function getPaymentTransactionStatus(context) 
+function getRechargeTransactionSituation(context) 
 {
     return P.resolve()
         .then(() => {
-            if (context.transaction.status.id === Number(context.idPaymentTransactionStatus)) {
-                Log.Error('Payment transaction status is equal to current status.');
-                return P.reject(new Errors.ConflictError('Payment transaction status is equal to current status.'));
+            if (context.transaction.situation.id === Number(context.idRechargeTransactionSituation)) {
+                Log.Error('Recharge transaction situation is equal to current situation.');
+                return P.reject(new Errors.ConflictError('Recharge transaction situation is equal to current situation.'));
             }
             return P.resolve();
         })
         .then(() => {
-            return Models.PaymentTransactionStatuses.getById(context.idPaymentTransactionStatus).then(status => {
-                if (!status) {
-                    Log.Error(`Payment transaction status ${context.idPaymentTransactionStatus} not found.`);
-                    return P.reject(Errors.NotExists.PaymentTransactionStatus);
+            return Models.RechargeTransactionSituations.getById(context.idRechargeTransactionSituation).then(situation => {
+                if (!situation) {
+                    Log.Error(`Recharge transaction situation ${context.idRechargeTransactionSituation} not found.`);
+                    return P.reject(Errors.NotExists.RechargeTransactionSituation);
                 }
-                context.status = status;
+                context.situation = situation;
                 return context;
             });
         });
@@ -127,7 +127,7 @@ function update(context)
             return save(context);
         })
         .then(() => {
-            return Models.PaymentTransactions.getById(context.transaction.id, {
+            return Models.RechargeTransactions.getById(context.transaction.id, {
                 withoutDetails: true,
                 useMaster: true,
                 force: true
@@ -143,10 +143,10 @@ function prepare(context)
 
             context.details.changes = context.details.changes || [];
             context.details.changes.push({
-                id_payment_transaction_status_from : context.transaction.status.id,
-                id_payment_transaction_status_to   : context.status.id,
-                id_administrator                     : context.administrator.id,
-                updated_at                           : new Date()
+                id_recharge_transaction_situation_from : context.transaction.situation.id,
+                id_recharge_transaction_situation_to   : context.situation.id,
+                id_administrator                       : context.administrator.id,
+                updated_at                             : new Date()
             });
             context.details = JSON.stringify(context.details);
             return context;
@@ -158,15 +158,15 @@ function save(context)
     return P.resolve()
         .then(() => {
             let data = {
-                id_payment_transaction_status : context.status.id,
-                description                     : context.details
+                id_recharge_transaction_situation : context.situation.id,
+                description                       : context.details
             };
 
-            return Models.PaymentTransactions.update(data, context.transaction.id);
+            return Models.RechargeTransactions.update(data, context.transaction.id);
         })
         .then(model => {
             Models.Companies.cacheClean(context.transaction.company.id);
-            Models.PaymentTransactions.cacheClean();
+            Models.RechargeTransactions.cacheClean();
             return model;
         });
 }
